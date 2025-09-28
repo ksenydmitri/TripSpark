@@ -10,16 +10,16 @@
 
 ### 1. Просмотр рекомендаций<a name="1"></a>
 
-![Просмотр рекомендаций]<img src="./images/Activity-Diagram2.png" width="60%" />
+<img src="./images/Activity-Diagram2.png" width="60%" />
 
 ---
 
 ### 2. Добавление заметки<a name="2"></a>
 
-![Добавление заметки]<img src="./images/Activity-Diagram1.png" width="60%" />
+<img src="./images/Activity-Diagram1.png" width="60%" />
 
 ---
 
 ### 3. Изменение интересов<a name="3"></a>
 
-![Изменение интересов]<img src="./images/Activity-Diagram3.png" width="60%" />
+<img src="./images/Activity-Diagram3.png" width="60%" />
