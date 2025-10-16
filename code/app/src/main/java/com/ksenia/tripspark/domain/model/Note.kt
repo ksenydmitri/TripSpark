@@ -1,4 +1,7 @@
 package com.ksenia.tripspark.domain.model
 
-class Note {
-}
+data class Note (
+    val id: String,
+    val text: String,
+    val status: String
+)

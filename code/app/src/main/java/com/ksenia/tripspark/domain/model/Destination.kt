@@ -1,4 +1,12 @@
 package com.ksenia.tripspark.domain.model
 
-class Destination {
-}
+import android.location.Location
+
+data class Destination (
+    val id: String,
+    val name: String,
+    val description: String,
+    val location: Location,
+    val imageUrl: String,
+    val note: Note?
+    )
