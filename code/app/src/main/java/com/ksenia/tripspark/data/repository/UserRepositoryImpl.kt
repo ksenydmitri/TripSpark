@@ -15,7 +15,8 @@ class UserRepositoryImpl : UserRepository {
                     Interest(id = "1", name = "sities"),
                     Interest(id = "2", name = "nature")
                 ),
-                wishlist = emptyList())
+                wishlist = emptyList(),
+                imageId = "")
         ) }
     }
 

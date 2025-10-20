@@ -18,6 +18,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -32,20 +33,30 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
+import androidx.navigation.NavController
 import com.ksenia.tripspark.R
 import com.ksenia.tripspark.domain.model.Interest
+import com.ksenia.tripspark.ui.viewmodel.InterestViewModel
 
-@Preview
+
 @Composable
-fun InterestSelectionScreen() {
-    val interests = listOf(
+fun InterestSelectionScreen(navController: NavController, viewModel: InterestViewModel = hiltViewModel(
+    checkNotNull(LocalViewModelStoreOwner.current) {
+            "No ViewModelStoreOwner was provided via LocalViewModelStoreOwner"
+        },
+    null
+)
+) {
+    val mockInterests = listOf(
         Interest("Пляжный отдых", "beach"),
         Interest("Горные лыжи", "skiing")
     )
     var selected by remember { mutableStateOf(emptyList<Interest>()) }
+    val user by viewModel.currentUser.collectAsState()
 
     Column(modifier = Modifier.fillMaxSize()) {
         Row(horizontalArrangement = Arrangement.SpaceBetween,
@@ -54,7 +65,7 @@ fun InterestSelectionScreen() {
             AvatarImage()}
         OptimizedSvg()
         InterestsList(
-            interests = interests,
+            interests = mockInterests,
             selectedInterests = selected,
             onInterestToggle = { interest ->
                 selected = if (selected.contains(interest)) {
