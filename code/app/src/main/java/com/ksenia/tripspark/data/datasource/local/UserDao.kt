@@ -11,11 +11,8 @@ import com.ksenia.tripspark.data.model.UserEntity
 @Dao
 interface UserDao {
 
-    @Query("SELECT * FROM users WHERE uid = :uid")
-    suspend fun getUserById(uid: String): UserEntity?
-
     @Query("SELECT * FROM users")
-    suspend fun getAllUsers(): List<UserEntity>
+    suspend fun getCurrentUser(): UserEntity?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertUser(user: UserEntity)
@@ -25,7 +22,4 @@ interface UserDao {
 
     @Delete
     suspend fun deleteUser(user: UserEntity)
-
-    @Query("SELECT * FROM users WHERE :interestId IN (interestIds)")
-    suspend fun getUsersByInterest(interestId: String): List<UserEntity>
 }

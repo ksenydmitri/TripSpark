@@ -7,6 +7,5 @@ data class Destination (
     val name: String,
     val description: String,
     val location: Location,
-    val imageUrl: String,
-    val note: Note?
+    val imageUrl: String
     )

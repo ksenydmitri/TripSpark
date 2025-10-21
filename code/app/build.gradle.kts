@@ -40,6 +40,10 @@ android {
     buildFeatures {
         compose = true
     }
+
+    configurations.all {
+        exclude(group = "com.intellij", module = "annotations")
+    }
 }
 
 dependencies {

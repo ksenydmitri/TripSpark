@@ -7,4 +7,5 @@ interface UserRepository {
     suspend fun getUser(): Flow<User?>
     suspend fun updateInterests(): Unit
     suspend fun syncUserData(): Unit
+    suspend fun loginUser()
 }

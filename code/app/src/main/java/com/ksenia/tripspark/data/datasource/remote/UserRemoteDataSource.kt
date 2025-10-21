@@ -3,10 +3,13 @@ package com.ksenia.tripspark.data.datasource.remote
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.coroutines.tasks.await
+import javax.inject.Inject
+import kotlin.text.get
 
-class UserRemoteDataSource(
-    private val auth: FirebaseAuth = FirebaseAuth.getInstance(),
-    private val firestore: FirebaseFirestore = FirebaseFirestore.getInstance()
+class UserRemoteDataSource@Inject constructor(
+    private val auth: FirebaseAuth,
+    private val firestore: FirebaseFirestore
 ) {
     fun getCurrentUserId(): String? = auth.currentUser?.uid
 
@@ -30,11 +33,12 @@ class UserRemoteDataSource(
         }
     }
 
-    fun getUserData(onResult: (DocumentSnapshot?) -> Unit) {
-        val uid = getCurrentUserId() ?: return onResult(null)
-        firestore.collection("users").document(uid)
-            .get()
-            .addOnSuccessListener { onResult(it) }
-            .addOnFailureListener { onResult(null) }
+    suspend fun getUserData(): DocumentSnapshot? {
+        val uid = getCurrentUserId() ?: return null
+        return try {
+            firestore.collection("users").document(uid).get().await()
+        } catch (e: Exception) {
+            null
+        }
     }
 }
