@@ -1,6 +1,7 @@
 package com.ksenia.tripspark.ui.screen
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -27,9 +28,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -38,6 +39,8 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import androidx.navigation.NavController
+import coil.compose.rememberAsyncImagePainter
+import coil.request.ImageRequest
 import com.ksenia.tripspark.R
 import com.ksenia.tripspark.domain.model.Interest
 import com.ksenia.tripspark.ui.viewmodel.InterestViewModel
@@ -61,7 +64,13 @@ fun InterestSelectionScreen(navController: NavController, viewModel: InterestVie
     Column(modifier = Modifier.fillMaxSize()) {
         Row(horizontalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier.fillMaxWidth()) {
-            Text("TripSpark")}
+            Text(user?.name ?: "TripSpark")
+            AvatarImage(
+                avatarUrl = user?.imageId,
+                modifier = Modifier.clickable {
+                    navController.navigate("profile")
+                }
+            )}
         OptimizedSvg()
         InterestsList(
             interests = mockInterests,
@@ -76,7 +85,7 @@ fun InterestSelectionScreen(navController: NavController, viewModel: InterestVie
         )
         GetRecommendationsButton(
             isEnabled = selected.isNotEmpty(),
-            onClick = { }
+            onClick = { navController.navigate("recommendations") }
         )
     }
 }
@@ -140,7 +149,7 @@ fun GetRecommendationsButton(isEnabled: Boolean,
             .fillMaxHeight(1f)
             .padding(horizontal = 16.dp),
     ) { Button(
-        onClick = {},
+        onClick = onClick,
         modifier = Modifier
             .align(Alignment.BottomCenter)
             .padding(vertical = 15.dp),
@@ -159,12 +168,22 @@ fun GetRecommendationsButton(isEnabled: Boolean,
 }
 
 @Composable
-fun AvatarImage(bitmap: ImageBitmap) {
+fun AvatarImage(avatarUrl: String?,
+                modifier: Modifier = Modifier,
+                placeholderRes: Int = R.drawable.avatar_base) {
+    val painter = rememberAsyncImagePainter(
+        model = ImageRequest.Builder(LocalContext.current)
+            .data(avatarUrl)
+            .crossfade(true)
+            .error(placeholderRes)
+            .placeholder(placeholderRes)
+            .build()
+    )
     Box {
         Image(
-            painter = painterResource(R.drawable.avatar_base),
+            painter = painter,
             contentDescription = "User avatar",
-            modifier = Modifier
+            modifier = modifier
                 .size(40.dp)
                 .clip(CircleShape),
             contentScale = ContentScale.Crop

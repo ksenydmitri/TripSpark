@@ -17,6 +17,8 @@ import androidx.navigation.compose.rememberNavController
 import com.ksenia.tripspark.ui.screen.AuthScreen
 import com.ksenia.tripspark.ui.screen.InterestSelectionScreen
 import com.ksenia.tripspark.ui.screen.ProfileScreen
+import com.ksenia.tripspark.ui.screen.RecommendationScreen
+import com.ksenia.tripspark.ui.screen.RegistrationScreen
 import com.ksenia.tripspark.ui.theme.TripSparkTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -37,6 +39,12 @@ class MainActivity : ComponentActivity() {
                     }
                     composable("interests") {
                         InterestSelectionScreen(navController)
+                    }
+                    composable("recommendations") {
+                        RecommendationScreen(navController)
+                    }
+                    composable("registration") {
+                        RegistrationScreen(navController)
                     }
                 }
             }

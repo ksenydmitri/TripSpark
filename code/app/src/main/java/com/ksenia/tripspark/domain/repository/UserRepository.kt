@@ -7,5 +7,6 @@ interface UserRepository {
     suspend fun getUser(): Flow<User?>
     suspend fun updateInterests(): Unit
     suspend fun syncUserData(): Unit
-    suspend fun loginUser()
+    suspend fun createUser(user: User): Unit
+    suspend fun createLocalUser(user: User): Unit
 }

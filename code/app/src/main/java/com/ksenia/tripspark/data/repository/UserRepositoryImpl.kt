@@ -19,13 +19,11 @@ class UserRepositoryImpl@Inject constructor(
     override suspend fun getUser(): Flow<User?> {
         try {
             val localUser = localDataSource.getCurrentUser()
-            return flow {
-                User(
-                    id = localUser?.uid ?: "",
-                    name = localUser?.name ?: "",
-                    email = localUser?.email ?: "",
-                    imageId = localUser?.imageId ?: ""
-                )
+            return flow { emit(User(
+                id = localUser?.uid ?: "",
+                name = localUser?.name ?: "",
+                email = localUser?.email ?: "",
+                imageId = localUser?.imageId ?: ""))
             }
         } catch (e: Exception){
             throw e;
@@ -40,13 +38,11 @@ class UserRepositoryImpl@Inject constructor(
         try {
             val document = remoteDataSource.getUserData()
             if (document != null && document.exists()) {
-                localDataSource.insertUser(
-                    user = UserEntity(
-                        uid = document.id,
-                        name = document.getString("name"),
-                        email = document.getString("email"),
-                        imageId = document.getString("imageId") ?: ""
-                    )
+                val user = UserEntity(
+                    uid = "local_user",
+                    name = document.getString("name"),
+                    email = document.getString("email"),
+                    imageId = document.getString("imageId") ?: ""
                 )
             } else {
                 return
@@ -56,7 +52,30 @@ class UserRepositoryImpl@Inject constructor(
         }
     }
 
-    override suspend fun loginUser() {
-        TODO("Not yet implemented")
+    override suspend fun createUser(user: User) {
+        try {
+            remoteDataSource.createUser(user =
+                User(id = user.id,
+                    name = user.name,
+                    email = user.email,
+                    imageId = user.imageId
+                ))
+        } catch (e: Exception){
+            throw Exception("Ошибка авторизации пользователя")
+        }
+    }
+
+    override suspend fun createLocalUser(user: User) {
+        val userEntity = UserEntity(
+            uid = "local_user",
+            name = user.name,
+            email = user.email,
+            imageId = user.imageId
+        )
+        try {
+            localDataSource.insertUser(userEntity)
+        } catch (e: Exception){
+            throw Exception("Ошибка сохранения пользователя")
+        }
     }
 }

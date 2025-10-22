@@ -27,10 +27,11 @@ import androidx.navigation.NavController
 import com.ksenia.tripspark.ui.viewmodel.AuthViewModel
 
 @Composable
-fun AuthScreen(navController: NavController,
-               authViewModel: AuthViewModel= hiltViewModel()) {
+fun RegistrationScreen(navController: NavController,
+                       authViewModel: AuthViewModel= hiltViewModel()) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+    var name by remember { mutableStateOf("") }
 
     Column(
         modifier = Modifier
@@ -54,6 +55,16 @@ fun AuthScreen(navController: NavController,
         Spacer(modifier = Modifier.height(16.dp))
 
         OutlinedTextField(
+            value = name,
+            onValueChange = { name = it },
+            label = { Text("Имя пользователя") },
+            singleLine = true,
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        OutlinedTextField(
             value = password,
             onValueChange = { password = it },
             label = { Text("Пароль") },
@@ -66,20 +77,19 @@ fun AuthScreen(navController: NavController,
 
         Button(
             onClick = {
-                authViewModel.authUserWithEmailAndPassword(email,password)
+                authViewModel.registerUser(email,password,name)
                 navController.navigate("interests")
             },
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text("Войти")
+            Text("Зарегистрироваться")
         }
 
         Spacer(modifier = Modifier.height(12.dp))
 
         TextButton(onClick = {
-            navController.navigate("registration")
         }) {
-            Text("Нет аккаунта? Зарегистрироваться")
+            Text("Есть аккаунт? Авторизоваться")
         }
     }
 }

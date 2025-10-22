@@ -31,6 +31,7 @@ class InterestViewModel @Inject constructor(
 
     private fun observeCurrentUser(){
         viewModelScope.launch {
+            userUseCases.updateLocalUserUseCase.invoke()
             userUseCases.getUser.invoke().collect {
                 user -> _currentUser.value = user
             }
