@@ -8,5 +8,4 @@ interface UserRepository {
     suspend fun updateInterests(): Unit
     suspend fun syncUserData(): Unit
     suspend fun createUser(user: User): Unit
-    suspend fun createLocalUser(user: User): Unit
 }

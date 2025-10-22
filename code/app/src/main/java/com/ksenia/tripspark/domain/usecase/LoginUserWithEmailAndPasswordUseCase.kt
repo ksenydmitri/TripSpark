@@ -1,6 +1,7 @@
 package com.ksenia.tripspark.domain.usecase
 
 import android.util.Log
+import com.google.android.play.integrity.internal.u
 import com.ksenia.tripspark.domain.model.User
 import com.ksenia.tripspark.domain.repository.AuthRepository
 import com.ksenia.tripspark.domain.repository.UserRepository
@@ -11,14 +12,8 @@ class LoginUserWithEmailAndPasswordUseCase@Inject constructor(
     private val userRepository: UserRepository
 ) {
     suspend operator fun invoke(email: String, password: String){
-        val userId = authRepository.loginUser(email,password)
         try {
-            userRepository.createUser(
-                User(id = userId,
-                    email = email,
-                    name = "",
-                    imageId = ""
-                ))
+            authRepository.loginUser(email,password)
             userRepository.syncUserData()
         } catch (e: Exception){
             Log.e("Login",e.message ?: "")

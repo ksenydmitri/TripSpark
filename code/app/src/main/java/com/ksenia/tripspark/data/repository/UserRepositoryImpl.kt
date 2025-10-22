@@ -44,6 +44,7 @@ class UserRepositoryImpl@Inject constructor(
                     email = document.getString("email"),
                     imageId = document.getString("imageId") ?: ""
                 )
+              localDataSource.insertUser(user)
             } else {
                 return
             }
@@ -62,20 +63,6 @@ class UserRepositoryImpl@Inject constructor(
                 ))
         } catch (e: Exception){
             throw Exception("Ошибка авторизации пользователя")
-        }
-    }
-
-    override suspend fun createLocalUser(user: User) {
-        val userEntity = UserEntity(
-            uid = "local_user",
-            name = user.name,
-            email = user.email,
-            imageId = user.imageId
-        )
-        try {
-            localDataSource.insertUser(userEntity)
-        } catch (e: Exception){
-            throw Exception("Ошибка сохранения пользователя")
         }
     }
 }

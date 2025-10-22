@@ -19,7 +19,7 @@ class RegisterUserUseCase@Inject constructor(
                 imageId = ""
             )
             userRepository.createUser(user)
-            userRepository.createLocalUser(user)
+            userRepository.syncUserData()
         } catch (e: Exception){
             Log.e("Register",e.message ?: "")
             throw e
