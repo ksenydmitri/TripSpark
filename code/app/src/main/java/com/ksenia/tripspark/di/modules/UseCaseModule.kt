@@ -61,10 +61,11 @@ object UseCaseModule {
 
     @Provides
     fun provideUpdateUserInterestsUseCase(
-        userRepository: UserRepository
+        userRepository: UserRepository,
+        interestRepository: InterestRepository
     ): UpdateUserInterestsUseCase{
         return UpdateUserInterestsUseCase(
-            userRepository
+            userRepository,interestRepository
         )
     }
 }

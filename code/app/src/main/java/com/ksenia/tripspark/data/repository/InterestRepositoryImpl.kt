@@ -49,7 +49,14 @@ class InterestRepositoryImpl@Inject constructor(
     }
 
     override suspend fun getChosenInterests(): List<Interest> {
-        TODO("Not yet implemented")
+        val interests = localDataSource.getChosenInterests().map { interestEntity ->
+            Interest(
+                id = interestEntity.uid,
+                name = interestEntity.name,
+                isChosen = interestEntity.isChosen
+            )
+        }
+        return interests
     }
 
 

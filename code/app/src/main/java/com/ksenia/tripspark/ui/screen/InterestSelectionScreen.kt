@@ -57,7 +57,7 @@ fun InterestSelectionScreen(navController: NavController, viewModel: InterestVie
 )
 ) {
     val interests by viewModel.interests.collectAsState()
-    var selected by remember { mutableStateOf(interests.filter { it.isChosen })}
+    val selected = interests.filter { it.isChosen }
     val user by viewModel.currentUser.collectAsState()
 
     Column(modifier = Modifier.fillMaxSize()) {
@@ -76,17 +76,13 @@ fun InterestSelectionScreen(navController: NavController, viewModel: InterestVie
             interests = interests,
             selectedInterests = selected,
             onInterestToggle = { interest ->
-                selected = if (selected.contains(interest)) {
-                    selected - interest
-                } else {
-                    selected + interest
-                }
+                viewModel.toggleInterest(interest.id)
             }
         )
         GetRecommendationsButton(
             isEnabled = selected.isNotEmpty(),
             onClick = {
-                viewModel.updateSelectedInterests(selected)
+                viewModel.saveSelectedInterests(selected)
                 navController.navigate("recommendations")
             }
         )

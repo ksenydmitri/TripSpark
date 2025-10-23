@@ -28,8 +28,10 @@ class InterestViewModel @Inject constructor(
     val interests: StateFlow<List<Interest>> = _interests.asStateFlow()
 
     init {
+        _isLoading.value = true
         observeCurrentUser()
         loadInterests()
+        _isLoading.value = false
     }
 
     private fun observeCurrentUser(){
@@ -48,10 +50,16 @@ class InterestViewModel @Inject constructor(
         }
     }
 
-    fun updateSelectedInterests(selected: List<Interest>) {
+    fun saveSelectedInterests(selected: List<Interest>) {
         viewModelScope.launch {
             interestUseCases.updateUserInterestsUseCase.invoke(selected)
         }
     }
 
+    fun toggleInterest(id: String) {
+        val updated = _interests.value.map {
+            if (it.id == id) it.copy(isChosen = !it.isChosen) else it
+        }
+        _interests.value = updated
+    }
 }
