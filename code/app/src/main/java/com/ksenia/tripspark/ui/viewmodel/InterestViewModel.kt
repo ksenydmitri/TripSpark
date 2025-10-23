@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ksenia.tripspark.domain.model.Interest
 import com.ksenia.tripspark.domain.model.User
+import com.ksenia.tripspark.domain.usecase.InterestUseCases
 import com.ksenia.tripspark.domain.usecase.UserUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -14,7 +15,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class InterestViewModel @Inject constructor(
-    private val userUseCases: UserUseCases
+    private val userUseCases: UserUseCases,
+    private val interestUseCases: InterestUseCases
 ): ViewModel() {
     private val _currentUser = MutableStateFlow<User?>(null)
     val currentUser: StateFlow<User?> = _currentUser.asStateFlow()
@@ -27,6 +29,7 @@ class InterestViewModel @Inject constructor(
 
     init {
         observeCurrentUser()
+        loadInterests()
     }
 
     private fun observeCurrentUser(){
@@ -37,4 +40,18 @@ class InterestViewModel @Inject constructor(
             }
         }
     }
+
+    private fun loadInterests() {
+        viewModelScope.launch {
+            val result = interestUseCases.getInterestsUseCase.invoke()
+            _interests.value = result
+        }
+    }
+
+    fun updateSelectedInterests(selected: List<Interest>) {
+        viewModelScope.launch {
+            interestUseCases.updateUserInterestsUseCase.invoke(selected)
+        }
+    }
+
 }

@@ -10,7 +10,7 @@ class UpdateLocalUserUseCase@Inject constructor(
         try {
             userRepository.syncUserData()
         }catch (e: Exception){
-            throw Exception("Ошибка синхронизации")
+            throw e
         }
     }
 }

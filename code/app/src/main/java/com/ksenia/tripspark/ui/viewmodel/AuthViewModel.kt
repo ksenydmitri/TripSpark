@@ -7,6 +7,7 @@ import com.ksenia.tripspark.domain.usecase.UserUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -20,18 +21,25 @@ class AuthViewModel@Inject constructor(
     private val _errorMessage = MutableStateFlow<String?>(null)
     val errorMessage: StateFlow<String?> = _errorMessage
 
+    private val _isLoading = MutableStateFlow(false)
+    val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
+
     init {
+        getCurrentUser()
+    }
+
+    fun getCurrentUser(){
         viewModelScope.launch {
-            userUseCases.updateLocalUserUseCase.invoke()
-            userUseCases.getUser()
-                .collect { user ->
-                    _currentUser.value = user
-                }
+            userUseCases.getUser.invoke().collect { user ->
+                _currentUser.value = user
+                _isLoading.value = true
+            }
         }
     }
 
-    fun isUserLoggedIn(): Boolean{
-        return currentUser.value != null
+    fun isUserLoggedIn(): Boolean {
+        val user = currentUser.value
+        return user != null && user.id.isNotBlank()
     }
 
     fun authUserWithEmailAndPassword(email: String, password: String){

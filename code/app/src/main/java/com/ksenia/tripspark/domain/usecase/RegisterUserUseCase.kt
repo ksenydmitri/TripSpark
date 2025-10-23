@@ -16,7 +16,8 @@ class RegisterUserUseCase@Inject constructor(
             val user = User(id = userId,
                 email = email,
                 name = name,
-                imageId = ""
+                imageId = "",
+                interests = emptyList()
             )
             userRepository.createUser(user)
             userRepository.syncUserData()

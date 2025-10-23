@@ -13,7 +13,7 @@ import com.ksenia.tripspark.data.model.UserEntity
     UserEntity::class,
     InterestEntity::class,
     NoteEntity::class,
-    DestinationEntity::class], version = 1,exportSchema = false)
+    DestinationEntity::class], version = 2,exportSchema = false)
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun userDao(): UserDao

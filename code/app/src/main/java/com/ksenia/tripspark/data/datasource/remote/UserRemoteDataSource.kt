@@ -30,11 +30,31 @@ class UserRemoteDataSource@Inject constructor(
                 hashMapOf(
                     "name" to user.name,
                     "email" to user.email,
-                    "imageId" to user.imageId
+                    "imageId" to user.imageId,
+                    "interests" to user.interests.map {
+                        interest -> "interests/" + interest.id
+                    }
                 )
             )
         } catch (e: Exception) {
             throw Exception("Ошибка создания записи пользователя")
+        }
+    }
+
+    fun updateUser(user: User) {
+        try{
+            firestore.collection("users").document(user.id).update(
+                hashMapOf(
+                    "name" to user.name,
+                    "email" to user.email,
+                    "imageId" to user.imageId,
+                    "interests" to user.interests.map {
+                            interest -> "interests/" + interest.id
+                    }
+                )
+            )
+        } catch (e: Exception) {
+            throw Exception("Ошибка обновления записи пользователя")
         }
     }
 }

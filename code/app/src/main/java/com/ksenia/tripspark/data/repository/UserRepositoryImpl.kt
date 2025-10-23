@@ -23,15 +23,20 @@ class UserRepositoryImpl@Inject constructor(
                 id = localUser?.uid ?: "",
                 name = localUser?.name ?: "",
                 email = localUser?.email ?: "",
-                imageId = localUser?.imageId ?: ""))
+                imageId = localUser?.imageId ?: "",
+                interests = emptyList()))
             }
         } catch (e: Exception){
             throw e;
         }
     }
 
-    override suspend fun updateInterests() {
-        TODO("Not yet implemented")
+    override suspend fun updateUser(user: User) {
+        try {
+            remoteDataSource.updateUser(user)
+        } catch (e: Exception){
+            throw e
+        }
     }
 
     override suspend fun syncUserData() {
@@ -59,7 +64,8 @@ class UserRepositoryImpl@Inject constructor(
                 User(id = user.id,
                     name = user.name,
                     email = user.email,
-                    imageId = user.imageId
+                    imageId = user.imageId,
+                    interests = user.interests
                 ))
         } catch (e: Exception){
             throw Exception("Ошибка авторизации пользователя")

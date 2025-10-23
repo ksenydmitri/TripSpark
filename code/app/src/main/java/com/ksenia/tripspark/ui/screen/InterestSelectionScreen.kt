@@ -6,9 +6,11 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
@@ -54,14 +56,12 @@ fun InterestSelectionScreen(navController: NavController, viewModel: InterestVie
     null
 )
 ) {
-    val mockInterests = listOf(
-        Interest("Пляжный отдых", "beach"),
-        Interest("Горные лыжи", "skiing")
-    )
-    var selected by remember { mutableStateOf(emptyList<Interest>()) }
+    val interests by viewModel.interests.collectAsState()
+    var selected by remember { mutableStateOf(interests.filter { it.isChosen })}
     val user by viewModel.currentUser.collectAsState()
 
     Column(modifier = Modifier.fillMaxSize()) {
+        Spacer(modifier = Modifier.height(20.dp))
         Row(horizontalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier.fillMaxWidth()) {
             Text(user?.name ?: "TripSpark")
@@ -73,7 +73,7 @@ fun InterestSelectionScreen(navController: NavController, viewModel: InterestVie
             )}
         OptimizedSvg()
         InterestsList(
-            interests = mockInterests,
+            interests = interests,
             selectedInterests = selected,
             onInterestToggle = { interest ->
                 selected = if (selected.contains(interest)) {
@@ -85,7 +85,10 @@ fun InterestSelectionScreen(navController: NavController, viewModel: InterestVie
         )
         GetRecommendationsButton(
             isEnabled = selected.isNotEmpty(),
-            onClick = { navController.navigate("recommendations") }
+            onClick = {
+                viewModel.updateSelectedInterests(selected)
+                navController.navigate("recommendations")
+            }
         )
     }
 }

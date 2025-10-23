@@ -9,9 +9,19 @@ import com.ksenia.tripspark.data.model.InterestEntity
 
 @Dao
 interface InterestDao {
-    @Query("SELECT * FROM interests WHERE userId = :userId ")
-    suspend fun getInterestsByUserId(userId: String): List<InterestEntity>
+
+    @Query("SELECT * FROM interests")
+    suspend fun getInterests(): List<InterestEntity>
+
+    @Query("SELECT * FROM interests WHERE isChosen = 1")
+    suspend fun getChosenInterests(): List<InterestEntity>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertInterest(interest: InterestEntity): Unit
+    suspend fun insertAll(interests: List<InterestEntity>)
+
+    @Query("UPDATE interests SET isChosen = :isChosen WHERE uid = :id")
+    suspend fun updateInterestSelection(id: String, isChosen: Boolean)
+
+    @Query("UPDATE interests SET isChosen = 0")
+    suspend fun clearAllSelections()
 }
