@@ -71,4 +71,12 @@ class UserRepositoryImpl@Inject constructor(
             throw Exception("Ошибка авторизации пользователя")
         }
     }
+
+    override suspend fun logoutUser(user: User){
+        localDataSource.deleteUser(UserEntity(uid = user.id,
+            name = user.name,
+            email = user.email,
+            imageId = user.imageId
+        ))
+    }
 }

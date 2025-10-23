@@ -26,4 +26,8 @@ class AuthDataSource@Inject constructor(
     }
 
     fun getCurrentUser(): FirebaseUser? = auth.currentUser
+
+    suspend fun logoutUser(){
+        auth.signOut()
+    }
 }
