@@ -3,6 +3,7 @@ package com.ksenia.tripspark.di.modules
 import android.content.Context
 import androidx.room.Room
 import com.ksenia.tripspark.data.datasource.local.AppDatabase
+import com.ksenia.tripspark.data.datasource.local.DestinationDao
 import com.ksenia.tripspark.data.datasource.local.InterestDao
 import com.ksenia.tripspark.data.datasource.local.UserDao
 import com.ksenia.tripspark.data.datasource.local.WishlistDao
@@ -41,5 +42,10 @@ object DatabaseModule {
     @Provides
     fun provideWishlistDao(database: AppDatabase): WishlistDao {
         return database.wishlistDao()
+    }
+
+    @Provides
+    fun provideDestination(database: AppDatabase): DestinationDao {
+        return database.destinationDao()
     }
 }

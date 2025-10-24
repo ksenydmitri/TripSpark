@@ -9,4 +9,5 @@ data class UserEntity(
     val email: String?,
     val name: String?,
     val imageId: String,
+    val remoteId: String
 )

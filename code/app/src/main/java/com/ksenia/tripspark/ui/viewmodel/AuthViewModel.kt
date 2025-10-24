@@ -1,7 +1,11 @@
 package com.ksenia.tripspark.ui.viewmodel
 
+import android.R.attr.data
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.firestore.FirebaseFirestore
+import com.ksenia.tripspark.domain.model.Destination
 import com.ksenia.tripspark.domain.model.User
 import com.ksenia.tripspark.domain.usecase.UserUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
