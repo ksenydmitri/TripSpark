@@ -47,7 +47,8 @@ class UserRepositoryImpl@Inject constructor(
                     uid = "local_user",
                     name = document.getString("name"),
                     email = document.getString("email"),
-                    imageId = document.getString("imageId") ?: ""
+                    imageId = document.getString("imageId") ?: "",
+                    remoteId = document.id
                 )
               localDataSource.insertUser(user)
             } else {
@@ -73,10 +74,12 @@ class UserRepositoryImpl@Inject constructor(
     }
 
     override suspend fun logoutUser(user: User){
-        localDataSource.deleteUser(UserEntity(uid = user.id,
+        localDataSource.deleteUser(UserEntity(
+            uid = user.id,
             name = user.name,
             email = user.email,
-            imageId = user.imageId
+            imageId = user.imageId,
+            remoteId = user.id
         ))
     }
 }
