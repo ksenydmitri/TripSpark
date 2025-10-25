@@ -3,21 +3,25 @@ package com.ksenia.tripspark.di.modules
 import com.ksenia.tripspark.data.datasource.local.DestinationDao
 import com.ksenia.tripspark.data.datasource.local.InterestDao
 import com.ksenia.tripspark.data.datasource.local.UserDao
+import com.ksenia.tripspark.data.datasource.local.WishlistDao
 import com.ksenia.tripspark.data.datasource.remote.AuthDataSource
 import com.ksenia.tripspark.data.datasource.remote.DestinationRemoteDataSource
 import com.ksenia.tripspark.data.datasource.remote.ImageRemoteDataSource
 import com.ksenia.tripspark.data.datasource.remote.InterestDataSource
 import com.ksenia.tripspark.data.datasource.remote.UserRemoteDataSource
+import com.ksenia.tripspark.data.datasource.remote.WishlistRemoteDataStore
 import com.ksenia.tripspark.data.repository.AuthRepositoryImpl
 import com.ksenia.tripspark.data.repository.DestinationRepositoryImpl
 import com.ksenia.tripspark.data.repository.ImageRepositoryImpl
 import com.ksenia.tripspark.data.repository.InterestRepositoryImpl
 import com.ksenia.tripspark.data.repository.UserRepositoryImpl
+import com.ksenia.tripspark.data.repository.WishlistRepositoryImpl
 import com.ksenia.tripspark.domain.repository.AuthRepository
 import com.ksenia.tripspark.domain.repository.InterestRepository
 import com.ksenia.tripspark.domain.repository.DestinationRepository
 import com.ksenia.tripspark.domain.repository.ImageRepository
 import com.ksenia.tripspark.domain.repository.UserRepository
+import com.ksenia.tripspark.domain.repository.WishlistRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -66,5 +70,13 @@ object RepositoryModule {
         remoteDataSource: ImageRemoteDataSource
     ): ImageRepository {
         return ImageRepositoryImpl(remoteDataSource)
+    }
+
+    @Provides
+    fun provideWishlistRepository(
+        localDataSource: WishlistDao,
+        remoteDataSource: WishlistRemoteDataStore
+    ): WishlistRepository {
+        return WishlistRepositoryImpl(localDataSource,remoteDataSource)
     }
 }

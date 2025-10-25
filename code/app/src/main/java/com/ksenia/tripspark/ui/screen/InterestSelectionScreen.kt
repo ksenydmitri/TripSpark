@@ -73,6 +73,9 @@ fun InterestSelectionScreen(navController: NavController, viewModel: InterestVie
                     .clip(CircleShape)
                     .clickable {
                         navController.navigate("profile")
+                },
+                onClick = {
+                    navController.navigate("profile")
                 }
             )}
         OptimizedSvg()

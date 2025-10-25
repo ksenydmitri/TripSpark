@@ -19,6 +19,7 @@ import com.ksenia.tripspark.ui.screen.InterestSelectionScreen
 import com.ksenia.tripspark.ui.screen.ProfileScreen
 import com.ksenia.tripspark.ui.screen.RecommendationScreen
 import com.ksenia.tripspark.ui.screen.RegistrationScreen
+import com.ksenia.tripspark.ui.screen.WishlistScreen
 import com.ksenia.tripspark.ui.theme.TripSparkTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -46,6 +47,8 @@ class MainActivity : ComponentActivity() {
                     composable("registration") {
                         RegistrationScreen(navController)
                     }
+                    composable("wishlist") {
+                        WishlistScreen(navController) }
                 }
             }
         }

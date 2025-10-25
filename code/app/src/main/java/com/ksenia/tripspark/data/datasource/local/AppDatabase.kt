@@ -8,12 +8,14 @@ import com.ksenia.tripspark.data.model.DestinationEntity
 import com.ksenia.tripspark.data.model.InterestEntity
 import com.ksenia.tripspark.data.model.NoteEntity
 import com.ksenia.tripspark.data.model.UserEntity
+import com.ksenia.tripspark.data.model.WishlistItemEntity
 
 @Database(entities = [
     UserEntity::class,
     InterestEntity::class,
     NoteEntity::class,
-    DestinationEntity::class], version = 3,exportSchema = false)
+    DestinationEntity::class,
+    WishlistItemEntity::class], version = 4,exportSchema = false)
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun userDao(): UserDao

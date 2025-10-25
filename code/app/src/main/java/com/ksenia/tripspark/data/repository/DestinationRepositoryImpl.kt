@@ -4,6 +4,7 @@ import android.location.Location
 import android.util.Log.e
 import com.ksenia.tripspark.data.datasource.local.DestinationDao
 import com.ksenia.tripspark.data.datasource.remote.DestinationRemoteDataSource
+import com.ksenia.tripspark.data.model.DestinationEntity
 import com.ksenia.tripspark.domain.model.Destination
 import com.ksenia.tripspark.domain.repository.DestinationRepository
 import javax.inject.Inject
@@ -16,6 +17,15 @@ class DestinationRepositoryImpl@Inject constructor(
     override suspend fun getAllDestinations(): List<Destination> {
         try {
             val destinationsRemote = destinationRemote.getAllDestinations()
+            /*destinationLocal.insertAll(destinationsRemote.map { destination ->
+                DestinationEntity(uid = destination.id,
+                    name = destination.name,
+                    description = destination.description,
+                    imageUrl = destination.imageUrl,
+                    latitude = destination.location.latitude,
+                    longitude = destination.location.longitude,
+                    userId = "")
+            })*/
             if (!destinationsRemote.isEmpty()){
                 return destinationsRemote
             } else {

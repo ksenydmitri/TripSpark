@@ -1,5 +1,6 @@
 package com.ksenia.tripspark.ui.components
 
+import android.R.attr.onClick
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.material.icons.Icons
@@ -38,7 +39,8 @@ fun AvatarWithChangeButton(
             avatarUrl = avatarUrl,
             modifier = Modifier
                 .size(100.dp)
-                .clip(CircleShape)
+                .clip(CircleShape),
+            onClick = {}
         )
         IconButton(
             onClick = onAddAvatarClick,
@@ -59,7 +61,8 @@ fun AvatarWithChangeButton(
 @Composable
 fun AvatarImage(
     avatarUrl: String?,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onClick : () -> Unit
 ) {
     val context = LocalContext.current
     val startTime = remember { System.currentTimeMillis() }
