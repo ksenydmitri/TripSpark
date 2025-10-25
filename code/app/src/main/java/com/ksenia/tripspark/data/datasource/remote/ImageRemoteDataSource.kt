@@ -17,28 +17,33 @@ class ImageRemoteDataSource @Inject constructor(
 
     private val client = OkHttpClient()
 
-    suspend fun uploadImage(imageBytes: ByteArray, fileName: String): String =
-        withContext(Dispatchers.IO) {
-            Log.d("UploadDebug", "imageBytes size: ${imageBytes.size}")
-            val encodedFileName = URLEncoder.encode(fileName, "UTF-8")
+    suspend fun uploadImage(
+        imageBytes: ByteArray,
+        fileName: String,
+        bucketKey: String = "CITY_IMAGES"
+    ): String = withContext(Dispatchers.IO) {
+        Log.d("UploadDebug", "imageBytes size: ${imageBytes.size}")
+        val encodedFileName = URLEncoder.encode(fileName, "UTF-8")
+        val encodedBucket = URLEncoder.encode(bucketKey, "UTF-8")
 
-            val request = Request.Builder()
-                .url("$workerEndpoint?name=$encodedFileName")
-                .post(imageBytes.toRequestBody("image/jpeg".toMediaType()))
-                .addHeader("Content-Type", "image/jpeg")
-                .build()
+        val request = Request.Builder()
+            .url("$workerEndpoint?name=$encodedFileName&bucket=$encodedBucket")
+            .post(imageBytes.toRequestBody("image/jpeg".toMediaType()))
+            .addHeader("Content-Type", "image/jpeg")
+            .build()
 
-            val response = client.newCall(request).execute()
+        val response = client.newCall(request).execute()
 
-            if (!response.isSuccessful) {
-                throw RuntimeException("Upload failed: ${response.code} ${response.message}")
-            }
-
-            return@withContext "$workerEndpoint?name=$encodedFileName"
+        if (!response.isSuccessful) {
+            throw RuntimeException("Upload failed: ${response.code} ${response.message}")
         }
 
-    fun getImageUrl(fileName: String): String {
+        return@withContext "$workerEndpoint?name=$encodedFileName&bucket=$encodedBucket"
+    }
+
+    fun getImageUrl(fileName: String, bucketKey: String = "CITY_IMAGES"): String {
         val encodedFileName = URLEncoder.encode(fileName, "UTF-8")
-        return "$workerEndpoint?name=$encodedFileName"
+        val encodedBucket = URLEncoder.encode(bucketKey, "UTF-8")
+        return "$workerEndpoint?name=$encodedFileName&bucket=$encodedBucket"
     }
 }

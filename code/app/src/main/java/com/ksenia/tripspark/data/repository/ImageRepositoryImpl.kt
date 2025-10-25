@@ -8,11 +8,11 @@ class ImageRepositoryImpl @Inject constructor(
     private val imageRemoteDataSource: ImageRemoteDataSource
 ) : ImageRepository {
 
-    override suspend fun uploadImage(documentId: String, imageBytes: ByteArray): String {
-        return imageRemoteDataSource.uploadImage(imageBytes, documentId)
+    override suspend fun uploadImage(documentId: String, imageBytes: ByteArray, bucketKey: String): String {
+        return imageRemoteDataSource.uploadImage(imageBytes, documentId, bucketKey)
     }
 
-    override suspend fun getImageUrl(documentId: String): String {
-        return imageRemoteDataSource.getImageUrl(documentId)
+    override suspend fun getImageUrl(documentId: String, bucketKey: String): String {
+        return imageRemoteDataSource.getImageUrl(documentId, bucketKey)
     }
 }

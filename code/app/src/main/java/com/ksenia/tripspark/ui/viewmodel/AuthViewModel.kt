@@ -88,7 +88,7 @@ class AuthViewModel@Inject constructor(
 
             try {
                 val avatarUrl = withContext(Dispatchers.IO) {
-                    userUseCases.uploadImageUseCase(fileName, bytes)
+                    userUseCases.uploadImageUseCase(fileName, bytes, "CITY_IMAGES")
                 }
                 userUseCases.updateUserAvatarUseCase(userId)
                 _currentUser.value = currentUser.value?.copy(imageId = avatarUrl)

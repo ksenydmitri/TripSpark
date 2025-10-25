@@ -84,7 +84,8 @@ fun SwipeableCard(
         Column(modifier = Modifier.fillMaxSize()) {
             recommendation.destination.imageUrl.let {
                 Image(
-                    painter = rememberAsyncImagePainter(it),
+                    painter = rememberAsyncImagePainter(
+                        recommendation.destination.imageUrl),
                     contentDescription = null,
                     modifier = Modifier
                         .fillMaxWidth()
