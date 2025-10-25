@@ -7,5 +7,7 @@ data class UserUseCases @Inject constructor(
     val updateLocalUserUseCase: UpdateLocalUserUseCase,
     val loginUserWithEmailAndPasswordUseCase: LoginUserWithEmailAndPasswordUseCase,
     val registerUserUseCase: RegisterUserUseCase,
-    val logoutUseCase: LogoutUseCase
+    val logoutUseCase: LogoutUseCase,
+    val uploadImageUseCase: UploadImageUseCase,
+    val updateUserAvatarUseCase: UpdateUserAvatarUseCase
 )

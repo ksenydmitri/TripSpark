@@ -10,4 +10,5 @@ interface UserRepository {
     suspend fun syncUserData(): Unit
     suspend fun createUser(user: User): Unit
     suspend fun logoutUser(user: User)
+    suspend fun updateUserAvatar(userId: String, avatarUrl: String)
 }

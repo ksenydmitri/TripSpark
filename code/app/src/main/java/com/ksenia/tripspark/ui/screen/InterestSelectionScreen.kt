@@ -45,6 +45,7 @@ import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import com.ksenia.tripspark.R
 import com.ksenia.tripspark.domain.model.Interest
+import com.ksenia.tripspark.ui.components.AvatarImage
 import com.ksenia.tripspark.ui.viewmodel.InterestViewModel
 
 
@@ -67,8 +68,11 @@ fun InterestSelectionScreen(navController: NavController, viewModel: InterestVie
             Text(user?.name ?: "TripSpark")
             AvatarImage(
                 avatarUrl = user?.imageId,
-                modifier = Modifier.clickable {
-                    navController.navigate("profile")
+                modifier = Modifier
+                    .size(50.dp)
+                    .clip(CircleShape)
+                    .clickable {
+                        navController.navigate("profile")
                 }
             )}
         OptimizedSvg()
@@ -164,30 +168,6 @@ fun GetRecommendationsButton(isEnabled: Boolean,
             fontWeight = FontWeight.Medium
         )
     } }
-}
-
-@Composable
-fun AvatarImage(avatarUrl: String?,
-                modifier: Modifier = Modifier,
-                placeholderRes: Int = R.drawable.avatar_base) {
-    val painter = rememberAsyncImagePainter(
-        model = ImageRequest.Builder(LocalContext.current)
-            .data(avatarUrl)
-            .crossfade(true)
-            .error(placeholderRes)
-            .placeholder(placeholderRes)
-            .build()
-    )
-    Box {
-        Image(
-            painter = painter,
-            contentDescription = "User avatar",
-            modifier = modifier
-                .size(40.dp)
-                .clip(CircleShape),
-            contentScale = ContentScale.Crop
-        )
-    }
 }
 
 @Composable

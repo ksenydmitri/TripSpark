@@ -20,7 +20,7 @@ class UserRepositoryImpl@Inject constructor(
         try {
             val localUser = localDataSource.getCurrentUser()
             return flow { emit(User(
-                id = localUser?.uid ?: "",
+                id = localUser?.remoteId ?: "",
                 name = localUser?.name ?: "",
                 email = localUser?.email ?: "",
                 imageId = localUser?.imageId ?: "",
@@ -47,7 +47,7 @@ class UserRepositoryImpl@Inject constructor(
                     uid = "local_user",
                     name = document.getString("name"),
                     email = document.getString("email"),
-                    imageId = document.getString("imageId") ?: "",
+                    imageId = document.getString("avatarUrl") ?: "",
                     remoteId = document.id
                 )
               localDataSource.insertUser(user)
@@ -81,5 +81,9 @@ class UserRepositoryImpl@Inject constructor(
             imageId = user.imageId,
             remoteId = user.id
         ))
+    }
+
+    override suspend fun updateUserAvatar(userId: String, avatarUrl: String) {
+        remoteDataSource.updateUserAvatar(userId, avatarUrl)
     }
 }

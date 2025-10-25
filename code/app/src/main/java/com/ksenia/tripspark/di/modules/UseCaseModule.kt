@@ -1,6 +1,7 @@
 package com.ksenia.tripspark.di.modules
 
 import com.ksenia.tripspark.domain.repository.AuthRepository
+import com.ksenia.tripspark.domain.repository.ImageRepository
 import com.ksenia.tripspark.domain.repository.InterestRepository
 import com.ksenia.tripspark.domain.repository.UserRepository
 import com.ksenia.tripspark.domain.usecase.GetInterestsUseCase
@@ -8,7 +9,9 @@ import com.ksenia.tripspark.domain.usecase.GetUserUseCase
 import com.ksenia.tripspark.domain.usecase.LoginUserWithEmailAndPasswordUseCase
 import com.ksenia.tripspark.domain.usecase.RegisterUserUseCase
 import com.ksenia.tripspark.domain.usecase.UpdateLocalUserUseCase
+import com.ksenia.tripspark.domain.usecase.UpdateUserAvatarUseCase
 import com.ksenia.tripspark.domain.usecase.UpdateUserInterestsUseCase
+import com.ksenia.tripspark.domain.usecase.UploadImageUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -67,5 +70,20 @@ object UseCaseModule {
         return UpdateUserInterestsUseCase(
             userRepository,interestRepository
         )
+    }
+
+    @Provides
+    fun provideUpdateUserAvatarUseCase(
+        userRepository: UserRepository,
+        imageRepository: ImageRepository
+    ): UpdateUserAvatarUseCase {
+        return UpdateUserAvatarUseCase(userRepository,imageRepository)
+    }
+
+    @Provides
+    fun provideUploadImageUseCase(
+        imageRepository: ImageRepository
+    ): UploadImageUseCase {
+        return UploadImageUseCase(imageRepository)
     }
 }

@@ -57,4 +57,11 @@ class UserRemoteDataSource@Inject constructor(
             throw Exception("Ошибка обновления записи пользователя")
         }
     }
+
+    suspend fun updateUserAvatar(userId: String, avatarUrl: String) {
+        firestore.collection("users")
+            .document(userId)
+            .update("avatarUrl", avatarUrl)
+            .await()
+    }
 }

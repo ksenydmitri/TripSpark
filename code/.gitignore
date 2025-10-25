@@ -122,3 +122,6 @@ app/*.aab
 
 # Kotlin
 *.ktsbuildinfo
+
+#local assets
+/app/src/main/assets/

@@ -14,6 +14,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.ksenia.tripspark.ui.components.SwipeableCard
 import com.ksenia.tripspark.ui.viewmodel.RecommendationViewModel
 
 @Composable
@@ -22,14 +23,14 @@ fun RecommendationScreen(navController: NavController,viewModel: RecommendationV
 
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
         cards.reversed().forEachIndexed { index, card ->
-            /*SwipeableCard(
+            SwipeableCard(
                 recommendation = card,
                 onSwiped = { viewModel.removeTopCard() },
                 modifier = Modifier
                     .fillMaxWidth(0.85f)
                     .aspectRatio(0.75f)
                     .offset(y = (index * 8).dp)
-            )*/
+            )
         }
     }
 }
