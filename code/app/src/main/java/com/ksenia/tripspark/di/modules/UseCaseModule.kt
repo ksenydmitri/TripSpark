@@ -6,15 +6,19 @@ import com.ksenia.tripspark.domain.repository.ImageRepository
 import com.ksenia.tripspark.domain.repository.InterestRepository
 import com.ksenia.tripspark.domain.repository.UserRepository
 import com.ksenia.tripspark.domain.repository.WishlistRepository
-import com.ksenia.tripspark.domain.usecase.GetInterestsUseCase
+import com.ksenia.tripspark.domain.usecase.interests.GetInterestsUseCase
 import com.ksenia.tripspark.domain.usecase.wishlist.GetUserDestinationsUseCase
 import com.ksenia.tripspark.domain.usecase.GetUserUseCase
 import com.ksenia.tripspark.domain.usecase.LoginUserWithEmailAndPasswordUseCase
 import com.ksenia.tripspark.domain.usecase.RegisterUserUseCase
 import com.ksenia.tripspark.domain.usecase.UpdateLocalUserUseCase
 import com.ksenia.tripspark.domain.usecase.UpdateUserAvatarUseCase
-import com.ksenia.tripspark.domain.usecase.UpdateUserInterestsUseCase
 import com.ksenia.tripspark.domain.usecase.UploadImageUseCase
+import com.ksenia.tripspark.domain.usecase.interests.GetChosenContinentsUseCase
+import com.ksenia.tripspark.domain.usecase.interests.GetChosenInterestsUseCase
+import com.ksenia.tripspark.domain.usecase.interests.GetContinentsUseCase
+import com.ksenia.tripspark.domain.usecase.interests.UpdateUserContinentsUseCase
+import com.ksenia.tripspark.domain.usecase.interests.UpdateUserInterestsUseCase
 import com.ksenia.tripspark.domain.usecase.wishlist.AddNoteToDestinationUseCase
 import com.ksenia.tripspark.domain.usecase.wishlist.AddToWishlistUseCase
 import com.ksenia.tripspark.domain.usecase.wishlist.DeleteNoteUseCase
@@ -73,12 +77,9 @@ object UseCaseModule {
 
     @Provides
     fun provideUpdateUserInterestsUseCase(
-        userRepository: UserRepository,
         interestRepository: InterestRepository
-    ): UpdateUserInterestsUseCase{
-        return UpdateUserInterestsUseCase(
-            userRepository,interestRepository
-        )
+    ): UpdateUserInterestsUseCase {
+        return UpdateUserInterestsUseCase(interestRepository)
     }
 
     @Provides
@@ -144,5 +145,35 @@ object UseCaseModule {
     ): UpdateNoteUseCase {
         return UpdateNoteUseCase(wishlistRepository)
     }
+
+    @Provides
+    fun provideGetContinentUseCase(
+        interestRepository: InterestRepository
+    ): GetContinentsUseCase {
+        return GetContinentsUseCase(interestRepository)
+    }
+
+    @Provides
+    fun provideGetChosenInterestsUseCase(
+        interestRepository: InterestRepository
+    ): GetChosenInterestsUseCase {
+        return GetChosenInterestsUseCase(interestRepository)
+    }
+
+    @Provides
+    fun provideGetChosenContinentsUseCase(
+        interestRepository: InterestRepository
+    ): GetChosenContinentsUseCase {
+        return GetChosenContinentsUseCase(interestRepository)
+    }
+
+
+    @Provides
+    fun provideUpdateUserContinentsUseCase(
+        interestRepository: InterestRepository
+    ): UpdateUserContinentsUseCase {
+        return UpdateUserContinentsUseCase(interestRepository)
+    }
+
 
 }

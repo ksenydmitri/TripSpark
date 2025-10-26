@@ -4,6 +4,7 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.ksenia.tripspark.data.datasource.Converters
+import com.ksenia.tripspark.data.model.ContinentEntity
 import com.ksenia.tripspark.data.model.DestinationEntity
 import com.ksenia.tripspark.data.model.InterestEntity
 import com.ksenia.tripspark.data.model.NoteEntity
@@ -15,7 +16,8 @@ import com.ksenia.tripspark.data.model.WishlistItemEntity
     InterestEntity::class,
     NoteEntity::class,
     DestinationEntity::class,
-    WishlistItemEntity::class], version = 4,exportSchema = false)
+    WishlistItemEntity::class,
+    ContinentEntity::class], version = 5,exportSchema = false)
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun userDao(): UserDao

@@ -2,64 +2,166 @@ package com.ksenia.tripspark.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.firestore.FirebaseFirestore
+import com.ksenia.tripspark.domain.model.Continent
 import com.ksenia.tripspark.domain.model.Interest
 import com.ksenia.tripspark.domain.model.User
-import com.ksenia.tripspark.domain.usecase.InterestUseCases
 import com.ksenia.tripspark.domain.usecase.UserUseCases
+import com.ksenia.tripspark.domain.usecase.interests.InterestUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 @HiltViewModel
 class InterestViewModel @Inject constructor(
     private val userUseCases: UserUseCases,
     private val interestUseCases: InterestUseCases
-): ViewModel() {
+) : ViewModel() {
+
     private val _currentUser = MutableStateFlow<User?>(null)
     val currentUser: StateFlow<User?> = _currentUser.asStateFlow()
 
     private val _isLoading = MutableStateFlow(false)
     val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
 
-    private val _interests = MutableStateFlow<List<Interest>>(emptyList())
-    val interests: StateFlow<List<Interest>> = _interests.asStateFlow()
+    private val _interests = MutableStateFlow<List<SelectableInterest>>(emptyList())
+    val interests: StateFlow<List<SelectableInterest>> = _interests.asStateFlow()
+
+    private val _continents = MutableStateFlow<List<SelectableContinent>>(emptyList())
+    val continents: StateFlow<List<SelectableContinent>> = _continents.asStateFlow()
 
     init {
+        viewModelScope.launch {
+            uploadContinents(FirebaseFirestore.getInstance())
+        }
         _isLoading.value = true
         observeCurrentUser()
         loadInterests()
+        loadContinents()
         _isLoading.value = false
     }
 
-    private fun observeCurrentUser(){
+    private fun observeCurrentUser() {
         viewModelScope.launch {
             userUseCases.updateLocalUserUseCase.invoke()
-            userUseCases.getUser.invoke().collect {
-                user -> _currentUser.value = user
+            userUseCases.getUser.invoke().collect { user ->
+                _currentUser.value = user
             }
         }
     }
 
     private fun loadInterests() {
         viewModelScope.launch {
-            val result = interestUseCases.getInterestsUseCase.invoke()
-            _interests.value = result
+            val raw = interestUseCases.getInterestsUseCase.invoke()
+            val chosen = interestUseCases.getChosenInterestsUseCase.invoke()
+            _interests.value = raw.map {
+                SelectableInterest(
+                    id = it.id,
+                    name = it.name,
+                    vector = it.vector,
+                    isChosen = chosen.contains(it.id)
+                )
+            }
         }
     }
 
-    fun saveSelectedInterests(selected: List<Interest>) {
+    private fun loadContinents() {
         viewModelScope.launch {
-            interestUseCases.updateUserInterestsUseCase.invoke(selected)
+            val raw = interestUseCases.getContinentsUseCase.invoke()
+            val chosen = interestUseCases.getChosenContinentsUseCase.invoke()
+            _continents.value = raw.map {
+                SelectableContinent(
+                    id = it.id,
+                    name = it.name,
+                    centerLat = it.centerLat,
+                    centerLon = it.centerLon,
+                    screenXPercent = it.screenXPercent,
+                    screenYPercent = it.screenYPercent,
+                    isSelected = chosen.contains(it.id)
+                )
+            }
         }
     }
 
     fun toggleInterest(id: String) {
-        val updated = _interests.value.map {
+        _interests.value = _interests.value.map {
             if (it.id == id) it.copy(isChosen = !it.isChosen) else it
         }
-        _interests.value = updated
+        saveSelectedInterests()
     }
+
+    fun toggleContinent(id: String) {
+        _continents.value = _continents.value.map {
+            if (it.id == id) it.copy(isSelected = !it.isSelected) else it
+        }
+        saveSelectedContinents()
+    }
+
+    fun saveSelectedInterests() {
+        val selected = _interests.value.filter { it.isChosen }
+        val userId = currentUser.value?.id ?: return
+
+        viewModelScope.launch {
+            interestUseCases.updateUserInterestsUseCase
+                .invoke(userId = userId,
+                    selectedIds = selected.map {
+                        interest -> interest.id }
+                )
+        }
+    }
+
+    fun saveSelectedContinents() {
+        val selectedIds = _continents.value.filter { it.isSelected }.map { it.id }
+        val userId = currentUser.value?.id ?: return
+
+        viewModelScope.launch {
+            interestUseCases.updateUserContinentsUseCase.invoke(userId, selectedIds)
+        }
+    }
+
+    data class SelectableInterest(
+        val id: String,
+        val name: String,
+        val vector: List<Float>,
+        val isChosen: Boolean = false
+    )
+
+    data class SelectableContinent(
+        val id: String,
+        val name: String?,
+        val centerLat: Double?,
+        val centerLon: Double?,
+        val screenXPercent: Float,
+        val screenYPercent: Float,
+        val isSelected: Boolean = false
+    )
+
+    suspend fun uploadContinents(firestore: FirebaseFirestore) {
+        val continents = listOf(
+            Continent("europe", "Europe", 48.0, 11.0, 0.55f, 0.35f),
+            Continent("asia", "Asia", 34.0, 100.0, 0.75f, 0.35f),
+            Continent("africa", "Africa", 0.0, 20.0, 0.55f, 0.55f),
+            Continent("north_america", "North America", 45.0, -100.0, 0.25f, 0.35f),
+            Continent("south_america", "South America", -15.0, -60.0, 0.35f, 0.65f),
+            Continent("australia", "Australia", -25.0, 133.0, 0.85f, 0.75f)
+        )
+
+        continents.forEach { continent ->
+            val data = mapOf(
+                "id" to continent.id,
+                "name" to continent.name,
+                "centerLat" to continent.centerLat,
+                "centerLon" to continent.centerLon,
+                "screenXPercent" to continent.screenXPercent,
+                "screenYPercent" to continent.screenYPercent
+            )
+            firestore.collection("continents").document(continent.id).set(data).await()
+        }
+    }
+
+
 }
