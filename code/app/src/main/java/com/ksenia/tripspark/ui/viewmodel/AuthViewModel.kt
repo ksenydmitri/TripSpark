@@ -1,13 +1,10 @@
 package com.ksenia.tripspark.ui.viewmodel
 
-import android.R.attr.data
 import android.content.Context
 import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.firebase.firestore.FirebaseFirestore
-import com.ksenia.tripspark.domain.model.Destination
 import com.ksenia.tripspark.domain.model.User
 import com.ksenia.tripspark.domain.usecase.UserUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -15,6 +12,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -36,19 +34,18 @@ class AuthViewModel@Inject constructor(
     val avatarUrl: StateFlow<String?> = _avatarUrl
 
     init {
-        getCurrentUser()
-
-    }
-
-    fun getCurrentUser(){
         viewModelScope.launch {
-            userUseCases.getUser.invoke().collect { user ->
-                _currentUser.value = user
-                _isLoading.value = true
-            }
+            _isLoading.value = true
+            loadCurrentUser()
+            _isLoading.value = false
         }
     }
 
+    private suspend fun loadCurrentUser() {
+        userUseCases.updateLocalUserUseCase.invoke()
+        val user = userUseCases.getUser.invoke().firstOrNull()
+        _currentUser.value = user
+    }
     fun isUserLoggedIn(): Boolean {
         val user = currentUser.value
         return user != null && user.id.isNotBlank()

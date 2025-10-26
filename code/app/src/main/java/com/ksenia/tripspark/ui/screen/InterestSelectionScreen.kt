@@ -28,6 +28,7 @@ import com.ksenia.tripspark.ui.components.AvatarImage
 import com.ksenia.tripspark.ui.components.GetRecommendationsButton
 import com.ksenia.tripspark.ui.components.InterestsList
 import com.ksenia.tripspark.ui.components.OptimizedSvgWithMarkers
+import com.ksenia.tripspark.ui.components.ProgressCircular
 import com.ksenia.tripspark.ui.viewmodel.InterestViewModel
 
 
@@ -46,10 +47,12 @@ fun InterestSelectionScreen(
     val user by viewModel.currentUser.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
 
+    if (!isLoading && user == null){
+        navController.navigate("auth")
+    }
+
     if (isLoading) {
-        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            CircularProgressIndicator(color = colorResource(R.color.primary_blue))
-        }
+        ProgressCircular()
         return
     }
 

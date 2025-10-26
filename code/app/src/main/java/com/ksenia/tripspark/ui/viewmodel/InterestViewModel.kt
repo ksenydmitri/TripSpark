@@ -9,6 +9,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -31,20 +32,19 @@ class InterestViewModel @Inject constructor(
     val continents: StateFlow<List<SelectableContinent>> = _continents.asStateFlow()
 
     init {
-        _isLoading.value = true
-        observeCurrentUser()
-        loadInterests()
-        loadContinents()
-        _isLoading.value = false
+        viewModelScope.launch {
+            _isLoading.value = true
+            observeCurrentUser()
+            loadInterests()
+            loadContinents()
+            _isLoading.value = false
+        }
     }
 
-    private fun observeCurrentUser() {
-        viewModelScope.launch {
-            userUseCases.updateLocalUserUseCase.invoke()
-            userUseCases.getUser.invoke().collect { user ->
-                _currentUser.value = user
-            }
-        }
+    private suspend fun observeCurrentUser() {
+        userUseCases.updateLocalUserUseCase.invoke()
+        val user = userUseCases.getUser.invoke().firstOrNull()
+        _currentUser.value = user
     }
 
     private fun loadInterests() {

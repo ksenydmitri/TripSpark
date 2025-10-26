@@ -6,6 +6,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
@@ -19,8 +20,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImagePainter
@@ -38,7 +41,7 @@ fun AvatarWithChangeButton(
         AvatarImage(
             avatarUrl = avatarUrl,
             modifier = Modifier
-                .size(100.dp)
+                .matchParentSize()
                 .clip(CircleShape)
         )
         IconButton(
@@ -65,16 +68,6 @@ fun AvatarImage(
     val context = LocalContext.current
     val startTime = remember { System.currentTimeMillis() }
 
-    if (avatarUrl.isNullOrBlank()) {
-        Log.d("AvatarLoad", "👤 Показываем базовую аватарку (нет URL)")
-        Image(
-            painter = painterResource(id = R.drawable.avatar_base),
-            contentDescription = "Базовая аватарка",
-            modifier = modifier
-        )
-        return
-    }
-
     val painter = rememberAsyncImagePainter(
         model = ImageRequest.Builder(context)
             .data(avatarUrl)
@@ -100,10 +93,29 @@ fun AvatarImage(
         }
     }
 
-    Image(
-        painter = painter,
-        contentDescription = "Аватар",
-        modifier = modifier,
-        contentScale = ContentScale.Crop
-    )
+    Box(modifier = modifier) {
+        if (state is AsyncImagePainter.State.Loading || state is
+                    AsyncImagePainter.State.Error ||
+            avatarUrl.isNullOrBlank()) {
+            Image(
+                painter = painterResource(id = R.drawable.avatar_base),
+                contentDescription = "Базовая аватарка",
+                modifier = Modifier
+                    .matchParentSize()
+                    .clip(CircleShape),
+                contentScale = ContentScale.Crop
+            )
+        }
+
+        if (state is AsyncImagePainter.State.Success) {
+            Image(
+                painter = painter,
+                contentDescription = "Аватар",
+                modifier = Modifier
+                    .matchParentSize()
+                    .clip(CircleShape),
+                contentScale = ContentScale.Crop
+            )
+        }
+    }
 }
