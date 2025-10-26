@@ -1,11 +1,13 @@
 package com.ksenia.tripspark.ui.components
 
+import android.R.attr.fontWeight
 import android.location.Location
 import android.util.Log
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -17,6 +19,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBackIos
@@ -27,6 +30,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
@@ -36,11 +40,13 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
+import com.ksenia.tripspark.R
 import com.ksenia.tripspark.domain.model.Destination
 import com.ksenia.tripspark.domain.model.Recommendation
 import kotlinx.coroutines.launch
@@ -95,87 +101,95 @@ fun SwipeableCard(
                     }
                 )
             }
-            .background(Color.White, shape = RoundedCornerShape(20.dp))
+            .background(colorResource(R.color.white),
+                shape = RoundedCornerShape(20.dp))
             .shadow(12.dp, RoundedCornerShape(20.dp))
             .padding(16.dp)
     ) {
-        Column(modifier = Modifier.fillMaxSize().padding(20.dp)) {
+        Column(modifier =
+            Modifier
+                .fillMaxSize()
+                .padding(20.dp),
+            verticalArrangement = Arrangement.SpaceAround) {
             Image(
                 painter = rememberAsyncImagePainter(recommendation.destination.imageUrl),
                 contentDescription = null,
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(180.dp)
-                    .clip(RoundedCornerShape(16.dp)),
+                    .clip(RoundedCornerShape(16.dp))
+                    .border(width = 3.dp,
+                        color = colorResource(R.color.purple_700),
+                        shape = RoundedCornerShape(19.dp)),
                 contentScale = ContentScale.Crop
             )
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(20.dp))
 
             Text(
                 text = recommendation.destination.name,
-                fontSize = 22.sp,
-                fontWeight = FontWeight.Bold,
+                fontSize = 40.sp,
+                fontWeight = FontWeight.SemiBold,
                 color = Color.Black
             )
-
-            Spacer(modifier = Modifier.height(6.dp))
 
             Text(
                 text = recommendation.destination.description,
-                fontSize = 14.sp,
-                color = Color.Black
+                fontSize = 20.sp,
+                color = colorResource(R.color.nature_mountain)
             )
 
-            Spacer(modifier = Modifier.height(12.dp))
 
             Row(modifier = Modifier.fillMaxWidth()) {
                 Text(
                     text = "⭐ ${recommendation.relevance}",
-                    fontSize = 14.sp,
+                    fontSize = 20.sp,
                     fontWeight = FontWeight.Medium,
-                    color = Color(0xFFFFA000)
+                    color = colorResource(R.color.accent_sunset)
                 )
                 Spacer(modifier = Modifier.weight(1f))
                 Text(
                     text = "Spring",
-                    fontSize = 14.sp,
+                    fontSize = 20.sp,
                     fontWeight = FontWeight.Medium,
-                    color = Color(0xFF4CAF50)
+                    color = colorResource(R.color.nature_green)
                 )
             }
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(20.dp))
 
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
                     .clip(RoundedCornerShape(10.dp))
-                    .background(Color(0xFF1976D2))
-                    .padding(vertical = 10.dp),
-                contentAlignment = androidx.compose.ui.Alignment.Center
+                    .background(colorResource(R.color.purple_700))
+                    .padding(vertical = 20.dp),
+                contentAlignment = Alignment.Center
             ) {
                 Text(
                     text = "Add to wishlist",
-                    fontSize = 14.sp,
+                    fontSize = 30.sp,
                     fontWeight = FontWeight.SemiBold,
                     color = Color.White
                 )
             }
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(20.dp))
 
             Row(horizontalArrangement = Arrangement.SpaceBetween,
-                modifier = Modifier.fillMaxSize()) {
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(100.dp)) {
                 IconButton(
                     onClick = { onSwiped },
                     modifier = Modifier
-                        .padding(start = 16.dp)
+                        .padding(start = 26.dp)
+                        .size(50.dp)
                 ) {
                     Icon(
                         imageVector = Icons.Default.ArrowBackIos,
                         contentDescription = "Previous",
-                        tint = Color.Black,
+                        tint = colorResource(R.color.nature_mountain),
                         modifier = Modifier.fillMaxSize()
                     )
                 }
@@ -184,11 +198,12 @@ fun SwipeableCard(
                     onClick = { onSwipedRight},
                     modifier = Modifier
                         .padding(end = 16.dp)
+                        .size(50.dp)
                 ) {
                     Icon(
                         imageVector = Icons.Default.ArrowForwardIos,
                         contentDescription = "Next",
-                        tint = Color.Black,
+                        tint = colorResource(R.color.nature_mountain),
                         modifier = Modifier.fillMaxSize()
                     )
                 }
@@ -218,8 +233,7 @@ fun SwipeableCardPreview() {
         recommendation = mockRecommendation,
         onSwiped = {},
         modifier = Modifier
-            .fillMaxWidth()
-            .aspectRatio(0.75f),
+            .fillMaxWidth(),
         onSwipedRight = {}
     )
 }

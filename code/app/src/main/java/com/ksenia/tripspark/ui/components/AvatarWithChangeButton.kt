@@ -39,8 +39,7 @@ fun AvatarWithChangeButton(
             avatarUrl = avatarUrl,
             modifier = Modifier
                 .size(100.dp)
-                .clip(CircleShape),
-            onClick = {}
+                .clip(CircleShape)
         )
         IconButton(
             onClick = onAddAvatarClick,
@@ -61,8 +60,7 @@ fun AvatarWithChangeButton(
 @Composable
 fun AvatarImage(
     avatarUrl: String?,
-    modifier: Modifier = Modifier,
-    onClick : () -> Unit
+    modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
     val startTime = remember { System.currentTimeMillis() }

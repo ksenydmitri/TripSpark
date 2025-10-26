@@ -7,4 +7,31 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+    <!-- 🌊 Основные тона -->
+    <color name="primary_blue">#3A86FF</color>         <!-- Чистый, насыщенный синий -->
+    <color name="primary_sand">#F4D58D</color>         <!-- Песочный, тёплый -->
+    <color name="primary_terracotta">#E07A5F</color>   <!-- Тёплый терракотовый -->
+
+    <!-- 🌿 Природные оттенки -->
+    <color name="nature_green">#6A994E</color>         <!-- Лесной зелёный -->
+    <color name="nature_ocean">#2A9D8F</color>         <!-- Глубокий морской -->
+    <color name="nature_mountain">#264653</color>      <!-- Скалистый серо-синий -->
+
+    <!-- ☀️ Акцентные цвета -->
+    <color name="accent_sunset">#F28482</color>        <!-- Закатный коралл -->
+    <color name="accent_gold">#FFD166</color>          <!-- Золотой акцент -->
+    <color name="accent_lavender">#CDB4DB</color>      <!-- Лавандовый для мягких элементов -->
+
+    <!-- 🧭 Нейтральные и фоновые -->
+    <color name="neutral_white">#FFFFFF</color>
+    <color name="neutral_black">#000000</color>
+    <color name="neutral_gray_light">#F0F0F0</color>
+    <color name="neutral_gray_medium">#BDBDBD</color>
+    <color name="neutral_gray_dark">#424242</color>
+
+    <!-- 🌐 Дополнительные для UI -->
+    <color name="success_green">#4CAF50</color>
+    <color name="warning_orange">#FFA726</color>
+    <color name="error_red">#EF5350</color>
 </resources>

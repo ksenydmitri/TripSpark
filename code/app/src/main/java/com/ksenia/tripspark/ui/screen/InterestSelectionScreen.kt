@@ -1,6 +1,7 @@
 package com.ksenia.tripspark.ui.screen
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -17,6 +18,7 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
@@ -63,20 +65,24 @@ fun InterestSelectionScreen(navController: NavController, viewModel: InterestVie
 
     Column(modifier = Modifier.fillMaxSize()) {
         Spacer(modifier = Modifier.height(20.dp))
-        Row(horizontalArrangement = Arrangement.SpaceBetween,
-            modifier = Modifier.fillMaxWidth()) {
-            Text(user?.name ?: "TripSpark")
+        Box(contentAlignment = Alignment.CenterEnd,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(
+                    end = 16.dp,
+                    top = 16.dp)) {
             AvatarImage(
                 avatarUrl = user?.imageId,
                 modifier = Modifier
                     .size(50.dp)
                     .clip(CircleShape)
+                    .border(
+                        width = 3.dp,
+                        color = colorResource(R.color.primary_blue),
+                        shape = CircleShape)
                     .clickable {
                         navController.navigate("profile")
                 },
-                onClick = {
-                    navController.navigate("profile")
-                }
             )}
         OptimizedSvg()
         InterestsList(
@@ -109,7 +115,12 @@ fun OptimizedSvg() {
             painter = painterResource(R.drawable.world_map),
             contentDescription = "optimized",
             modifier = Modifier
-                .fillMaxSize(),
+                .fillMaxSize()
+                .clip(RoundedCornerShape(16.dp))
+                .border(
+                    width = 3.dp,
+                    color = colorResource(R.color.primary_blue),
+                    shape = RoundedCornerShape(19.dp)),
             contentScale = ContentScale.Fit
         )
     }
