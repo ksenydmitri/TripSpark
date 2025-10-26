@@ -16,9 +16,11 @@ class InterestDataSource@Inject constructor(
         val interests = snapshot.documents.mapNotNull { doc ->
             val id = doc.id
             val name = doc.getString("name")
-            Log.e("GET INTERESTS",name ?: "")
+            val vectorRaw = doc.get("vector") as? List<*> ?: emptyList<Any>()
+            val vector = vectorRaw.mapNotNull { it as? Number }.map { it.toFloat() }
+            Log.e("GET INTERESTS","${name} ${vector.size}")
             if (name != null)
-                Interest(id, name, vector = emptyList()) else null
+                Interest(id, name, vector = vector) else null
         }
         return interests
     }

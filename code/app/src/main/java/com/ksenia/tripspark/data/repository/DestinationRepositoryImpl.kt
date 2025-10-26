@@ -1,7 +1,7 @@
 package com.ksenia.tripspark.data.repository
 
 import android.location.Location
-import android.util.Log.e
+import com.ksenia.tripspark.data.datasource.Converters
 import com.ksenia.tripspark.data.datasource.local.DestinationDao
 import com.ksenia.tripspark.data.datasource.remote.DestinationRemoteDataSource
 import com.ksenia.tripspark.data.model.DestinationEntity
@@ -11,39 +11,57 @@ import javax.inject.Inject
 
 class DestinationRepositoryImpl@Inject constructor(
     private val destinationLocal: DestinationDao,
-    private val destinationRemote: DestinationRemoteDataSource
+    private val destinationRemote: DestinationRemoteDataSource,
+    private val converters: Converters
 ) : DestinationRepository{
 
     override suspend fun getAllDestinations(): List<Destination> {
-        try {
+        return try {
             val destinationsRemote = destinationRemote.getAllDestinations()
-            /*destinationLocal.insertAll(destinationsRemote.map { destination ->
-                DestinationEntity(uid = destination.id,
-                    name = destination.name,
-                    description = destination.description,
-                    imageUrl = destination.imageUrl,
-                    latitude = destination.location.latitude,
-                    longitude = destination.location.longitude,
-                    userId = "")
-            })*/
-            if (!destinationsRemote.isEmpty()){
-                return destinationsRemote
-            } else {
-                return destinationLocal.getAllDestinations().map { destinationEntity ->
-                    Destination(
-                        id = destinationEntity.uid,
-                        name = destinationEntity.name,
-                        description = destinationEntity.description,
-                        location = Location("firebase").apply {
-                            latitude = destinationEntity.latitude
-                            longitude = destinationEntity.longitude
-                        },
-                        imageUrl = destinationEntity.imageUrl
+            if (destinationsRemote.isNotEmpty()) {
+                destinationLocal.insertAll(destinationsRemote.map { destination ->
+                    DestinationEntity(
+                        uid = destination.id,
+                        name = destination.name,
+                        description = destination.description,
+                        imageUrl = destination.imageUrl,
+                        latitude = destination.location.latitude,
+                        longitude = destination.location.longitude,
+                        rating = destination.rating,
+                        vector = converters.fromVector(destination.vector)
                     )
-                }
+                })
             }
-        } catch (e: Exception){
-            throw e
+            destinationLocal.getAllDestinations().map { entity ->
+                Destination(
+                    id = entity.uid,
+                    name = entity.name,
+                    description = entity.description,
+                    location = Location("local").apply {
+                        latitude = entity.latitude
+                        longitude = entity.longitude
+                    },
+                    imageUrl = entity.imageUrl,
+                    rating = entity.rating,
+                    vector = converters.toVector(entity.vector)
+                )
+            }
+        } catch (e: Exception) {
+            destinationLocal.getAllDestinations().map { entity ->
+                Destination(
+                    id = entity.uid,
+                    name = entity.name,
+                    description = entity.description,
+                    location = Location("local").apply {
+                        latitude = entity.latitude
+                        longitude = entity.longitude
+                    },
+                    imageUrl = entity.imageUrl,
+                    rating = entity.rating,
+                    vector = converters.toVector(entity.vector)
+                )
+            }
         }
     }
+
 }

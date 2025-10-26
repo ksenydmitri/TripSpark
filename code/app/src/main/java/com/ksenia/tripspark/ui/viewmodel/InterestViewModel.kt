@@ -2,9 +2,6 @@ package com.ksenia.tripspark.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.firebase.firestore.FirebaseFirestore
-import com.ksenia.tripspark.domain.model.Continent
-import com.ksenia.tripspark.domain.model.Interest
 import com.ksenia.tripspark.domain.model.User
 import com.ksenia.tripspark.domain.usecase.UserUseCases
 import com.ksenia.tripspark.domain.usecase.interests.InterestUseCases
@@ -13,7 +10,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 @HiltViewModel
@@ -35,9 +31,6 @@ class InterestViewModel @Inject constructor(
     val continents: StateFlow<List<SelectableContinent>> = _continents.asStateFlow()
 
     init {
-        viewModelScope.launch {
-            uploadContinents(FirebaseFirestore.getInstance())
-        }
         _isLoading.value = true
         observeCurrentUser()
         loadInterests()
@@ -139,29 +132,4 @@ class InterestViewModel @Inject constructor(
         val screenYPercent: Float,
         val isSelected: Boolean = false
     )
-
-    suspend fun uploadContinents(firestore: FirebaseFirestore) {
-        val continents = listOf(
-            Continent("europe", "Europe", 48.0, 11.0, 0.55f, 0.35f),
-            Continent("asia", "Asia", 34.0, 100.0, 0.75f, 0.35f),
-            Continent("africa", "Africa", 0.0, 20.0, 0.55f, 0.55f),
-            Continent("north_america", "North America", 45.0, -100.0, 0.25f, 0.35f),
-            Continent("south_america", "South America", -15.0, -60.0, 0.35f, 0.65f),
-            Continent("australia", "Australia", -25.0, 133.0, 0.85f, 0.75f)
-        )
-
-        continents.forEach { continent ->
-            val data = mapOf(
-                "id" to continent.id,
-                "name" to continent.name,
-                "centerLat" to continent.centerLat,
-                "centerLon" to continent.centerLon,
-                "screenXPercent" to continent.screenXPercent,
-                "screenYPercent" to continent.screenYPercent
-            )
-            firestore.collection("continents").document(continent.id).set(data).await()
-        }
-    }
-
-
 }

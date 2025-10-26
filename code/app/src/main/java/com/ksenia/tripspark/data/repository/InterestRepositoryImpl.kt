@@ -1,6 +1,7 @@
 package com.ksenia.tripspark.data.repository
 
 import android.util.Log
+import com.ksenia.tripspark.data.datasource.Converters
 import com.ksenia.tripspark.data.datasource.local.InterestDao
 import com.ksenia.tripspark.data.datasource.remote.InterestDataSource
 import com.ksenia.tripspark.data.model.ContinentEntity
@@ -12,7 +13,8 @@ import javax.inject.Inject
 
 class InterestRepositoryImpl@Inject constructor(
     private val remoteDataSource: InterestDataSource,
-    private val localDataSource: InterestDao
+    private val localDataSource: InterestDao,
+    private val converters: Converters
 ): InterestRepository {
 
     override suspend fun getInterests(): List<Interest> {
@@ -31,7 +33,8 @@ class InterestRepositoryImpl@Inject constructor(
                 Log.e("GET INTERESTS",interest.name)
                 InterestEntity(
                     uid = interest.id,
-                    name = interest.name
+                    name = interest.name,
+                    vector = converters.fromVector(interest.vector)
                 )
             }
             localDataSource.insertAllInterest(localInterests)

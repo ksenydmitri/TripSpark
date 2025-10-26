@@ -7,5 +7,6 @@ import androidx.room.PrimaryKey
 data class InterestEntity(
     @PrimaryKey val uid: String,
     val name: String,
+    val vector: String,
     val isChosen: Boolean = false
 )

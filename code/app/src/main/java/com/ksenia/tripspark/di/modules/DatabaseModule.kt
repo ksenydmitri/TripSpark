@@ -2,6 +2,7 @@ package com.ksenia.tripspark.di.modules
 
 import android.content.Context
 import androidx.room.Room
+import com.ksenia.tripspark.data.datasource.Converters
 import com.ksenia.tripspark.data.datasource.local.AppDatabase
 import com.ksenia.tripspark.data.datasource.local.DestinationDao
 import com.ksenia.tripspark.data.datasource.local.InterestDao
@@ -27,6 +28,11 @@ object DatabaseModule {
             "app_database"
         ).fallbackToDestructiveMigration(true)
             .build()
+    }
+
+    @Provides
+    fun provideConverters(): Converters {
+        return Converters()
     }
 
     @Provides

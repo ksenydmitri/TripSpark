@@ -13,5 +13,6 @@ data class DestinationEntity(
     val latitude: Double,
     val longitude: Double,
     val imageUrl: String,
-    val userId: String,
+    val rating: Double,
+    val vector: String
 )

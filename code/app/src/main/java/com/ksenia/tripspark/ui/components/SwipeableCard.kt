@@ -1,6 +1,5 @@
 package com.ksenia.tripspark.ui.components
 
-import android.R.attr.fontWeight
 import android.location.Location
 import android.util.Log
 import androidx.compose.animation.core.Animatable
@@ -14,7 +13,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -142,7 +140,7 @@ fun SwipeableCard(
 
             Row(modifier = Modifier.fillMaxWidth()) {
                 Text(
-                    text = "⭐ ${recommendation.relevance}",
+                    text = "⭐ ${recommendation.destination.rating}",
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Medium,
                     color = colorResource(R.color.accent_sunset)
@@ -210,30 +208,4 @@ fun SwipeableCard(
             }
         }
     }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun SwipeableCardPreview() {
-    val mockRecommendation = Recommendation(
-        destination = Destination(
-            id = "porto",
-            name = "Porto",
-            description = "City with an atmosphere like your favorite Lisbon",
-            location = Location("mock").apply {
-                latitude = 41.1579
-                longitude = -8.6291
-            },
-            imageUrl = "https://r2-worker.ksenydmitri.workers.dev/?name=moscow.jpg&bucket=SITIES"
-        ),
-        relevance = 4.7f
-    )
-
-    SwipeableCard(
-        recommendation = mockRecommendation,
-        onSwiped = {},
-        modifier = Modifier
-            .fillMaxWidth(),
-        onSwipedRight = {}
-    )
 }

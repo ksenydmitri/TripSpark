@@ -1,5 +1,6 @@
 package com.ksenia.tripspark.di.modules
 
+import com.ksenia.tripspark.data.datasource.Converters
 import com.ksenia.tripspark.data.datasource.local.DestinationDao
 import com.ksenia.tripspark.data.datasource.local.InterestDao
 import com.ksenia.tripspark.data.datasource.local.UserDao
@@ -50,19 +51,23 @@ object RepositoryModule {
     @Provides
     fun provideInterestRepository(
         remoteDataSource: InterestDataSource,
-        localDataSource: InterestDao
+        localDataSource: InterestDao,
+        converters: Converters
     ): InterestRepository{
-        return InterestRepositoryImpl(remoteDataSource,localDataSource)
+        return InterestRepositoryImpl(remoteDataSource, localDataSource,
+            converters)
     }
 
     @Provides
     fun provideRecommendationRepository(
         destinationLocalDataSource: DestinationDao,
-        destinationRemoteDataSource: DestinationRemoteDataSource
+        destinationRemoteDataSource: DestinationRemoteDataSource,
+        converters: Converters
     ): DestinationRepository {
         return DestinationRepositoryImpl(
             destinationLocalDataSource,
-            destinationRemoteDataSource)
+            destinationRemoteDataSource,
+            converters)
     }
 
     @Provides
