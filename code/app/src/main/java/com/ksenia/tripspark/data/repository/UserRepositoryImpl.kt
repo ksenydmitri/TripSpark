@@ -73,14 +73,8 @@ class UserRepositoryImpl@Inject constructor(
         }
     }
 
-    override suspend fun logoutUser(user: User){
-        localDataSource.deleteUser(UserEntity(
-            uid = user.id,
-            name = user.name,
-            email = user.email,
-            imageId = user.imageId,
-            remoteId = user.id
-        ))
+    override suspend fun logoutUser(userId: String){
+        localDataSource.deleteUserById(userId)
     }
 
     override suspend fun updateUserAvatar(userId: String, avatarUrl: String) {

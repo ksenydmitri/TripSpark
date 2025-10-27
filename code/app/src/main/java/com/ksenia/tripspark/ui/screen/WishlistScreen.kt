@@ -1,8 +1,13 @@
 package com.ksenia.tripspark.ui.screen
 
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -10,6 +15,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonColors
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -19,10 +27,17 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.ksenia.tripspark.R
 import com.ksenia.tripspark.domain.model.Note
 import com.ksenia.tripspark.domain.model.WishlistItem
 import com.ksenia.tripspark.ui.components.AddNoteDialog
@@ -46,21 +61,51 @@ fun WishlistScreen(navController: NavController,
     viewModel.currentUser.collectAsState().value?.imageId
     var showDialogForId by remember { mutableStateOf<String?>(null) }
 
+    Box(modifier = Modifier.fillMaxSize()) {
+        Image(
+            painter = painterResource(id = R.drawable.back),
+            contentDescription = null,
+            contentScale = ContentScale.Crop,
+            modifier = Modifier.fillMaxSize()
+        )
+
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color.Black.copy(alpha = 0.6f))
+        )
+    }
+
     Column{
-        Box(contentAlignment = Alignment.CenterEnd,
+        Row(horizontalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(
                     end = 16.dp,
-                    top = 16.dp)) {
+                    top = 16.dp
+                )) {
+            Button(
+                onClick = {
+                    navController.navigate("recommendations")
+                },
+                colors = ButtonColors(
+                    contentColor = colorResource(R.color.white),
+                    containerColor = Color.Transparent,
+                    disabledContentColor = colorResource(R.color.primary_blue),
+                    disabledContainerColor = Color.Transparent
+                ),
+            ) {
+                Text(text = "←",
+                    fontSize = 32.sp,
+                    fontWeight = FontWeight.ExtraBold)
+            }
             AvatarImage(
                 avatarUrl = user?.imageId,
                 modifier = Modifier
                     .size(50.dp)
                     .clip(CircleShape)
-                    .clickable {
-                        navController.navigate("profile")
-                    },
+                    .border(3.dp, colorResource(R.color.primary_blue), CircleShape)
+                    .clickable { navController.navigate("profile") }
             )}
         LazyColumn(modifier = Modifier.fillMaxSize()) {
             items(wishlist) { item ->
@@ -92,52 +137,4 @@ fun WishlistScreen(navController: NavController,
         )
     }
 
-}
-
-
-@Preview(showBackground = true)
-@Composable
-fun WishlistScreenPreview() {
-    val mockItems = listOf(
-        WishlistItem(
-            destinationId = "1",
-            name = "Tokyo",
-            note = "Visit during cherry blossom season",
-            addedAt = System.currentTimeMillis()
-        ),
-        WishlistItem(
-            destinationId = "2",
-            name = "Paris",
-            note = "Climb the Eiffel Tower at sunset",
-            addedAt = System.currentTimeMillis()
-        ),
-        WishlistItem(
-            destinationId = "3",
-            name = "Reykjavik",
-            note = "See the northern lights",
-            addedAt = System.currentTimeMillis()
-        ),
-        WishlistItem(
-            destinationId = "4",
-            name = "Cape Town",
-            note = "Hike Table Mountain",
-            addedAt = System.currentTimeMillis()
-        ),
-        WishlistItem(
-            destinationId = "5",
-            name = "Kyiv",
-            note = "Explore Podil and try local food",
-            addedAt = System.currentTimeMillis()
-        )
-    )
-
-    LazyColumn(modifier = Modifier.fillMaxSize()) {
-        items(mockItems) { item ->
-            WishlistComponentCard(
-                item = item,
-                onEditClick = {},
-                onDeleteClick = {}
-            )
-        }
-    }
 }

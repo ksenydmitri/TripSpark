@@ -1,6 +1,7 @@
 package com.ksenia.tripspark.ui.components
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -37,7 +38,11 @@ fun OptimizedSvgWithMarkers(
             .fillMaxWidth()
             .height(250.dp)
             .clip(RoundedCornerShape(16.dp))
-            .border(3.dp, colorResource(R.color.primary_blue), RoundedCornerShape(19.dp))
+            .background(
+                color = colorResource(R.color.neutral_white),
+                shape = RoundedCornerShape(19.dp))
+            .border(3.dp, colorResource(R.color.primary_blue),
+                RoundedCornerShape(19.dp))
     ) {
         Image(
             painter = painterResource(R.drawable.world_map),

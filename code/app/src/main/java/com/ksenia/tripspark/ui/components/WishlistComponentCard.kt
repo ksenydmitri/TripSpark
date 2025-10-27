@@ -16,6 +16,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardColors
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -23,10 +24,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.ksenia.tripspark.R
 import com.ksenia.tripspark.domain.model.Destination
 import com.ksenia.tripspark.domain.model.WishlistItem
 
@@ -44,7 +47,14 @@ fun WishlistComponentCard(
     ) {
         Card(
             modifier = Modifier.fillMaxSize(),
-            border = BorderStroke(width = 2.dp, color = Color.Gray)
+            border = BorderStroke(width = 2.dp,
+                color = colorResource(R.color.purple_700)),
+            colors = CardColors(
+                containerColor = colorResource(R.color.accent_lavender),
+                contentColor = colorResource(R.color.purple_200),
+                disabledContentColor = colorResource(R.color.purple_200),
+                disabledContainerColor = colorResource(R.color.accent_lavender)
+            )
         ) {
             Row(
                 modifier = Modifier.fillMaxSize(),
@@ -92,4 +102,17 @@ fun WishlistComponentCard(
             }
         }
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun  PreviewWishlistCard(){
+    WishlistComponentCard(
+        item = WishlistItem(
+            destinationId = "1",
+            name = "Tokyo",
+            note = "Visit during cherry blossom season",
+            addedAt = System.currentTimeMillis()
+        ), onEditClick = {}
+        ) { }
 }

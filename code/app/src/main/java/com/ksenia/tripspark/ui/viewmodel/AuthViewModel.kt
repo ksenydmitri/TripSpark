@@ -1,5 +1,6 @@
 package com.ksenia.tripspark.ui.viewmodel
 
+import android.R.attr.password
 import android.content.Context
 import android.net.Uri
 import android.util.Log
@@ -33,18 +34,25 @@ class AuthViewModel@Inject constructor(
     private val _avatarUrl = MutableStateFlow<String?>(null)
     val avatarUrl: StateFlow<String?> = _avatarUrl
 
+    private val _isRegistration = MutableStateFlow<Boolean>(false)
+    val isRegistration: StateFlow<Boolean> = _isRegistration
+
     init {
-        viewModelScope.launch {
-            _isLoading.value = true
             loadCurrentUser()
-            _isLoading.value = false
-        }
     }
 
-    private suspend fun loadCurrentUser() {
-        userUseCases.updateLocalUserUseCase.invoke()
-        val user = userUseCases.getUser.invoke().firstOrNull()
-        _currentUser.value = user
+    private fun loadCurrentUser() {
+        viewModelScope.launch {
+            try {
+                _isLoading.value = true
+                userUseCases.updateLocalUserUseCase.invoke()
+                val user = userUseCases.getUser.invoke().firstOrNull()
+                _currentUser.value = user
+                _isLoading.value = false
+            } catch (e: Exception){
+                _errorMessage.value = e.message
+            }
+        }
     }
     fun isUserLoggedIn(): Boolean {
         val user = currentUser.value
@@ -52,28 +60,38 @@ class AuthViewModel@Inject constructor(
     }
 
     fun authUserWithEmailAndPassword(email: String, password: String){
+        _isLoading.value = true
         viewModelScope.launch{
             try {
                 userUseCases.loginUserWithEmailAndPasswordUseCase(email,password)
+                loadCurrentUser()
             } catch (e: Exception){
                 _errorMessage.value = e.message
             }
         }
+        _isLoading.value = false
     }
 
     fun registerUser(email: String, password: String,name: String){
         viewModelScope.launch{
+            _isLoading.value = true
             try {
                 userUseCases.registerUserUseCase(email,password,name)
+                loadCurrentUser()
             } catch (e: Exception){
                 _errorMessage.value = e.message
             }
+            _isLoading.value = false
         }
     }
 
     fun logout(){
         viewModelScope.launch {
-            userUseCases.logoutUseCase.invoke()
+            try {
+                userUseCases.logoutUseCase(currentUser.value?.id)
+            } catch (e: Exception){
+                _errorMessage.value = e.message
+            }
         }
     }
 
@@ -104,12 +122,11 @@ class AuthViewModel@Inject constructor(
         return bytes to contentType
     }
 
-    private fun getUserAvatar(){
-        viewModelScope.launch {
-            userUseCases.updateLocalUserUseCase()
-            userUseCases.getUser.invoke().collect { user ->
-                _avatarUrl.value = user?.imageId
-            }
-        }
+    fun onSwitchToLogin(){
+        _isRegistration.value = false
+    }
+
+    fun onSwitchToRegistration(){
+        _isRegistration.value = true
     }
 }

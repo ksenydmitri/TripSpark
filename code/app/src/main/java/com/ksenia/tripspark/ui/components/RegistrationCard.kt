@@ -1,12 +1,12 @@
 package com.ksenia.tripspark.ui.components
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -23,23 +23,27 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun AuthCard(
-    onLogin: (String, String) -> Unit,
-    onSwitchToRegistration: () -> Unit,
-){
+fun RegistrationCard(
+    onRegister: (email: String, password: String, name: String) -> Unit,
+    onSwitchToLogin: () -> Unit
+) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+    var name by remember { mutableStateOf("") }
+
     Card(
-        modifier = Modifier.padding(16.dp)
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
         Column(
             modifier = Modifier
-                .padding(16.dp),
+                .padding(24.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text("Авторизация", fontSize = 24.sp, fontWeight = FontWeight.Bold)
-
-            Spacer(modifier = Modifier.height(24.dp))
+            Text("Регистрация", fontSize = 24.sp, fontWeight = FontWeight.Bold)
 
             OutlinedTextField(
                 value = email,
@@ -49,7 +53,13 @@ fun AuthCard(
                 modifier = Modifier.fillMaxWidth()
             )
 
-            Spacer(modifier = Modifier.height(16.dp))
+            OutlinedTextField(
+                value = name,
+                onValueChange = { name = it },
+                label = { Text("Имя пользователя") },
+                singleLine = true,
+                modifier = Modifier.fillMaxWidth()
+            )
 
             OutlinedTextField(
                 value = password,
@@ -60,19 +70,15 @@ fun AuthCard(
                 modifier = Modifier.fillMaxWidth()
             )
 
-            Spacer(modifier = Modifier.height(24.dp))
-
             Button(
-                onClick = { onLogin(email, password) },
+                onClick = { onRegister(email, password, name) },
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text("Войти")
+                Text("Зарегистрироваться")
             }
 
-            Spacer(modifier = Modifier.height(12.dp))
-
-            TextButton(onClick = { onSwitchToRegistration() }) {
-                Text("Нет аккаунта? Зарегистрироваться")
+            TextButton(onClick = onSwitchToLogin) {
+                Text("Есть аккаунт? Авторизоваться")
             }
         }
     }

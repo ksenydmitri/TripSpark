@@ -1,6 +1,5 @@
 package com.ksenia.tripspark.ui.components
 
-import android.R.attr.onClick
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.material.icons.Icons
@@ -8,6 +7,7 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.CircularProgressIndicator
@@ -20,10 +20,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImagePainter
@@ -37,13 +35,19 @@ fun AvatarWithChangeButton(
     modifier: Modifier = Modifier,
     onAddAvatarClick: () -> Unit
 ) {
-    Box(modifier = modifier) {
-        AvatarImage(
-            avatarUrl = avatarUrl,
+    Box(modifier = modifier.size(120.dp)) {
+        Box(
             modifier = Modifier
-                .matchParentSize()
+                .fillMaxSize()
                 .clip(CircleShape)
-        )
+                .background(Color.LightGray)
+                .border(width = 2.dp, color = Color.White, shape = CircleShape)
+        ) {
+            AvatarImage(
+                avatarUrl = avatarUrl,
+                modifier = Modifier.fillMaxSize()
+            )
+        }
         IconButton(
             onClick = onAddAvatarClick,
             modifier = Modifier
@@ -67,6 +71,16 @@ fun AvatarImage(
 ) {
     val context = LocalContext.current
     val startTime = remember { System.currentTimeMillis() }
+
+    if (avatarUrl.isNullOrBlank()) {
+        Log.d("AvatarLoad", "👤 Показываем базовую аватарку (нет URL)")
+        Image(
+            painter = painterResource(id = R.drawable.avatar_base),
+            contentDescription = "Базовая аватарка",
+            modifier = modifier
+        )
+        return
+    }
 
     val painter = rememberAsyncImagePainter(
         model = ImageRequest.Builder(context)
@@ -93,29 +107,10 @@ fun AvatarImage(
         }
     }
 
-    Box(modifier = modifier) {
-        if (state is AsyncImagePainter.State.Loading || state is
-                    AsyncImagePainter.State.Error ||
-            avatarUrl.isNullOrBlank()) {
-            Image(
-                painter = painterResource(id = R.drawable.avatar_base),
-                contentDescription = "Базовая аватарка",
-                modifier = Modifier
-                    .matchParentSize()
-                    .clip(CircleShape),
-                contentScale = ContentScale.Crop
-            )
-        }
-
-        if (state is AsyncImagePainter.State.Success) {
-            Image(
-                painter = painter,
-                contentDescription = "Аватар",
-                modifier = Modifier
-                    .matchParentSize()
-                    .clip(CircleShape),
-                contentScale = ContentScale.Crop
-            )
-        }
-    }
+    Image(
+        painter = painter,
+        contentDescription = "Аватар",
+        modifier = modifier,
+        contentScale = ContentScale.Crop
+    )
 }

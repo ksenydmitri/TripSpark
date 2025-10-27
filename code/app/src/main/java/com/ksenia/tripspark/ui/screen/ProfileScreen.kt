@@ -1,5 +1,6 @@
 package com.ksenia.tripspark.ui.screen
 
+import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
@@ -28,18 +29,15 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.ksenia.tripspark.R
 import com.ksenia.tripspark.ui.components.AvatarWithChangeButton
@@ -69,10 +67,8 @@ fun ProfileScreen(
         return
     }
 
-    if (user == null) {
-        LaunchedEffect(Unit) {
-            navController.navigate("auth")
-        }
+    if (user == null || user!!.id.isBlank()) {
+        navController.navigate("auth")
         return
     }
 
@@ -172,23 +168,4 @@ fun ProfileScreenContent(
             }
         }
     }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun ProfileScreenPreview() {
-    val fakeUser = com.ksenia.tripspark.domain.model.User(
-        id = "preview",
-        name = "Ксения Дмитриева",
-        email = "ksenia@example.com",
-        imageId = "https://example.com/avatar.jpg",
-        interests = emptyList()
-    )
-
-    ProfileScreenContent(
-        user = fakeUser,
-        onAvatarClick = {},
-        onBackClick = {},
-        onLogoutClick = {}
-    )
 }

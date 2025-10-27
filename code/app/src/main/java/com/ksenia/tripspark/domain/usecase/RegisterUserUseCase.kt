@@ -10,7 +10,7 @@ class RegisterUserUseCase@Inject constructor(
     private val authRepository: AuthRepository,
     private val userRepository: UserRepository
 ) {
-    suspend operator fun invoke(email: String, password: String, name: String){
+    suspend operator fun invoke(email: String, password: String, name: String): String{
         try {
             val userId = authRepository.registerUser(email,password)
             val user = User(id = userId,
@@ -21,6 +21,7 @@ class RegisterUserUseCase@Inject constructor(
             )
             userRepository.createUser(user)
             userRepository.syncUserData()
+            return userId
         } catch (e: Exception){
             Log.e("Register",e.message ?: "")
             throw e
