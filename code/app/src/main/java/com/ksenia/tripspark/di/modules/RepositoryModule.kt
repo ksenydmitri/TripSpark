@@ -2,6 +2,7 @@ package com.ksenia.tripspark.di.modules
 
 import com.ksenia.tripspark.data.datasource.Converters
 import com.ksenia.tripspark.data.datasource.local.DestinationDao
+import com.ksenia.tripspark.data.datasource.local.ImageLocalDataSource
 import com.ksenia.tripspark.data.datasource.local.InterestDao
 import com.ksenia.tripspark.data.datasource.local.UserDao
 import com.ksenia.tripspark.data.datasource.local.WishlistDao
@@ -72,9 +73,11 @@ object RepositoryModule {
 
     @Provides
     fun provideImageRepository(
-        remoteDataSource: ImageRemoteDataSource
+        remoteDataSource: ImageRemoteDataSource,
+        localDataSource: ImageLocalDataSource
     ): ImageRepository {
-        return ImageRepositoryImpl(remoteDataSource)
+        return ImageRepositoryImpl(remoteDataSource,
+            localDataSource)
     }
 
     @Provides

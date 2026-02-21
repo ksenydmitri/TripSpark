@@ -46,4 +46,16 @@ class ImageRemoteDataSource @Inject constructor(
         val encodedBucket = URLEncoder.encode(bucketKey, "UTF-8")
         return "$workerEndpoint?name=$encodedFileName&bucket=$encodedBucket"
     }
+
+    suspend fun downloadImage(url: String): ByteArray = withContext(Dispatchers.IO) {
+        val request = Request.Builder().url(url).build()
+        val response = client.newCall(request).execute()
+
+        if (!response.isSuccessful) {
+            throw RuntimeException("Download failed: ${response.code}")
+        }
+
+        response.body?.bytes() ?: throw RuntimeException("Empty body")
+    }
+
 }
