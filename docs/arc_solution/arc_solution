@@ -31,41 +31,9 @@
 
 ### 6. Структурная схема (To Be)
 
-```mermaid
-graph TD
-    subgraph Presentation [Уровень представления - Android UI]
-        UI[UI (Compose/XML)]
-        VM[ViewModel + StateFlow]
-    end
+![Архитектура To Be](to_be.png)
 
-    subgraph Domain [Доменный уровень]
-        UC[UseCases]
-        Entities[Entities (User, Destination, WishlistItem)]
-        RepoInt[Repository Interfaces]
-    end
-
-    subgraph Data [Уровень данных]
-        RepoImpl[Repository Implementations]
-        Remote[Remote Data Source - Firebase]
-        Local[Local Data Source - Room + File Cache]
-    end
-
-    subgraph Cloud [Облако]
-        Auth[Firebase Auth]
-        Firestore[Firestore DB]
-        Worker[Image Upload Endpoint]
-    end
-
-    UI --> VM
-    VM --> UC
-    UC --> RepoInt
-    RepoInt --> RepoImpl
-    RepoImpl --> Remote
-    RepoImpl --> Local
-    Remote --> Auth
-    Remote --> Firestore
-    Remote --> Worker
-```
+---
 
 ## Часть 3. Сравнение и рефакторинг
 
@@ -106,3 +74,4 @@ graph TD
 ### Вывод
 
 Целевая архитектура TripSpark ("To Be") основана на Clean Architecture и обеспечивает высокую масштабируемость, удобство сопровождения и производительность. Текущая реализация ("As Is") в целом следует этим принципам, но содержит упрощения. Рефакторинг позволит приблизить систему к идеальной архитектуре, улучшить читаемость кода и повысить качество приложения.
+
