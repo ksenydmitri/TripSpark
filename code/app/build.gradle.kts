@@ -120,5 +120,9 @@ dependencies {
 
     implementation(libs.accompanist.flowlayout)
 
+    // Google Maps
+    implementation(libs.google.maps.compose)
+    implementation(libs.play.services.maps)
+
 
 }
