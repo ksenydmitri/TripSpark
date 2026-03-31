@@ -1,11 +1,11 @@
 package com.ksenia.tripspark.ui.screen
 
-import android.location.Location
-import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -13,7 +13,11 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Map
 import androidx.compose.material3.Button
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -22,13 +26,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.ksenia.tripspark.domain.model.Destination
-import com.ksenia.tripspark.domain.model.Recommendation
 import com.ksenia.tripspark.ui.components.AvatarImage
 import com.ksenia.tripspark.ui.components.SwipeableCard
 import com.ksenia.tripspark.ui.viewmodel.RecommendationViewModel
@@ -41,7 +41,9 @@ fun RecommendationScreen(
     val cards by viewModel.recommendations.collectAsState()
     val user by viewModel.currentUser.collectAsState()
 
-    Box(modifier = Modifier.fillMaxSize()) {
+    Box(modifier = Modifier
+        .fillMaxSize()
+        .padding(top = 32.dp)) { // Adjust for status bar
         Column(modifier = Modifier.fillMaxSize())  {
             Box(
                 modifier = Modifier
@@ -51,14 +53,15 @@ fun RecommendationScreen(
                 contentAlignment = Alignment.CenterEnd
             ){
                 AvatarImage(
-                avatarUrl = user?.imageId,
-                modifier = Modifier
-                    .size(50.dp)
-                    .clip(CircleShape)
-                    .clickable {
-                        navController.navigate("profile")
-                    }.border(width = 2.dp, color = Color.Gray)
-            )}
+                    avatarUrl = user?.imageId,
+                    modifier = Modifier
+                        .size(50.dp)
+                        .clip(CircleShape)
+                        .clickable {
+                            navController.navigate("profile")
+                        }.border(width = 2.dp, color = MaterialTheme.colorScheme.outline, shape = CircleShape)
+                )
+            }
             Box(
                 modifier = Modifier
                     .fillMaxSize()
@@ -66,35 +69,56 @@ fun RecommendationScreen(
                     .weight(1f),
                 contentAlignment = Alignment.Center
             ) {
-                cards.reversed().forEach { card ->
-                    SwipeableCard(
-                        recommendation = card,
-                        onSwiped = { viewModel.removeTopCard() },
-                        onSwipedRight = {
-                            val userId = viewModel.currentUser.value?.id ?: return@SwipeableCard
-                            viewModel.addToWishlist(userId, card)
-                            viewModel.removeTopCard()
-                        },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .fillMaxHeight()
+                if (cards.isEmpty()) {
+                    Text(
+                        text = "Больше нет рекомендаций",
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
+                } else {
+                    cards.reversed().forEach { card ->
+                        SwipeableCard(
+                            recommendation = card,
+                            onSwiped = { viewModel.removeTopCard() },
+                            onSwipedRight = {
+                                val userId = viewModel.currentUser.value?.id ?: return@SwipeableCard
+                                viewModel.addToWishlist(userId, card)
+                                viewModel.removeTopCard()
+                            },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .fillMaxHeight()
+                        )
+                    }
                 }
             }
-            Box(
+            
+            Row(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(16.dp),
-                contentAlignment = Alignment.Center
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalAlignment = Alignment.CenterVertically
             ) {
                 Button(
-                    onClick = { navController.navigate("wishlist") }
+                    onClick = { navController.navigate("wishlist") },
+                    modifier = Modifier.weight(1f)
                 ) {
-                    Text(text = "Перейти к вишлисту")
+                    Text(text = "Вишлист")
+                }
+                
+                Button(
+                    onClick = { navController.navigate("map") },
+                    modifier = Modifier.weight(1f)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Map,
+                        contentDescription = null,
+                        modifier = Modifier.size(18.dp)
+                    )
+                    Text(text = " На карту", modifier = Modifier.padding(start = 4.dp))
                 }
             }
-
         }
-
     }
 }

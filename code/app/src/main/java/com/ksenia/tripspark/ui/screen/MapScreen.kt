@@ -1,9 +1,11 @@
 package com.ksenia.tripspark.ui.screen
 
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -38,31 +40,35 @@ fun MapScreen(
                 modifier = Modifier.fillMaxSize(),
                 cameraPositionState = cameraPositionState
             ) {
-                // Render Wishlist Items (Blue markers)
+                // Отображение элементов из списка желаемого (синие маркеры)
                 uiState.wishlistDestinations.forEach { destination ->
                     Marker(
                         state = MarkerState(position = LatLng(destination.location.latitude, destination.location.longitude)),
                         title = destination.name,
-                        snippet = "Saved in Wishlist",
+                        snippet = "В списке желаемого",
                         icon = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)
                     )
                 }
 
-                // Render Recommended Items (Red/Orange markers)
+                // Отображение рекомендаций (красные маркеры)
                 uiState.recommendedDestinations.forEach { recommendation ->
                     val destination = recommendation.destination
+                    val relevancePercent = (recommendation.relevance * 100).toInt().coerceIn(0, 100)
                     Marker(
                         state = MarkerState(position = LatLng(destination.location.latitude, destination.location.longitude)),
                         title = destination.name,
-                        snippet = "Relevance: ${(recommendation.relevance * 100).toInt()}%",
+                        snippet = "Релевантность: $relevancePercent%",
                         icon = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED),
-                        alpha = recommendation.relevance.coerceIn(0.3f, 1.0f)
+                        alpha = recommendation.relevance.coerceIn(0.4f, 1.0f)
                     )
                 }
             }
 
             if (uiState.isLoading) {
-                CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+                CircularProgressIndicator(
+                    modifier = Modifier.align(Alignment.Center),
+                    color = MaterialTheme.colorScheme.primary
+                )
             }
         }
     }
